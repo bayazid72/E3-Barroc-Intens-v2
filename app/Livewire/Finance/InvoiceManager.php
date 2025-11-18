@@ -9,6 +9,9 @@ use Livewire\Component;
 class InvoiceManager extends Component
 {
     public $creating = false;
+    public $editing  = false;
+
+    public $editingInvoiceId = null;
 
     public $company_id;
     public $invoice_date;
@@ -21,10 +24,27 @@ class InvoiceManager extends Component
         $this->companies = Company::orderBy('name')->get();
     }
 
+    /* =============================
+     * CREATE
+     * ============================= */
+
     public function startCreate()
     {
+        $this->reset(['editing', 'editingInvoiceId']);
         $this->creating = true;
     }
+
+    public function markAsPaid($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+
+        $invoice->update([
+            'status' => 'paid',
+        ]);
+
+        session()->flash('success', 'Factuur gemarkeerd als betaald!');
+    }
+
 
     public function createInvoice()
     {
@@ -36,17 +56,58 @@ class InvoiceManager extends Component
 
         Invoice::create([
             'company_id'   => $this->company_id,
-            'invoice_date' => $this->invoice_date, // LET OP: moet bestaan in DB
+            'invoice_date' => $this->invoice_date,
             'total_amount' => $this->total_amount,
             'status'       => 'open',
             'is_sent'      => false,
             'type'         => 'invoice',
         ]);
 
-        $this->reset(['company_id', 'invoice_date', 'total_amount', 'creating']);
+        $this->reset(['company_id','invoice_date','total_amount','creating']);
 
         session()->flash('success', 'Factuur succesvol aangemaakt!');
     }
+
+
+    /* =============================
+     * EDIT
+     * ============================= */
+
+    public function editInvoice($id)
+    {
+        $invoice = Invoice::findOrFail($id);
+
+        $this->editing = true;
+        $this->creating = false;
+
+        $this->editingInvoiceId = $invoice->id;
+
+        $this->company_id = $invoice->company_id;
+        $this->invoice_date = $invoice->invoice_date;
+        $this->total_amount = $invoice->total_amount;
+    }
+
+    public function updateInvoice()
+    {
+        $this->validate([
+            'company_id' => 'required|exists:companies,id',
+            'invoice_date' => 'required|date',
+            'total_amount' => 'required|numeric|min:0',
+        ]);
+
+        $invoice = Invoice::findOrFail($this->editingInvoiceId);
+
+        $invoice->update([
+            'company_id' => $this->company_id,
+            'invoice_date' => $this->invoice_date,
+            'total_amount' => $this->total_amount,
+        ]);
+
+        $this->reset(['editing','editingInvoiceId','company_id','invoice_date','total_amount']);
+
+        session()->flash('success', 'Factuur succesvol bijgewerkt!');
+    }
+
 
     public function render()
     {
@@ -54,4 +115,20 @@ class InvoiceManager extends Component
             'invoices' => Invoice::with('company')->orderBy('invoice_date', 'desc')->get()
         ]);
     }
+
+
+    public function deleteInvoice($id)
+        {
+            $invoice = Invoice::findOrFail($id);
+
+            // verwijder gekoppelde regels (als cascade niet werkt)
+            if ($invoice->lines()->count() > 0) {
+                $invoice->lines()->delete();
+            }
+
+            $invoice->delete();
+
+            session()->flash('success', 'Factuur succesvol verwijderd!');
+        }
+
 }

@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->foreignId('contract_id')->nullable()->constrained('contracts');
             $table->dateTime('invoice_date');
             $table->decimal('total_amount', 10, 2);
+            $table->string('status')->default('open');
             $table->dateTime('paid_at')->nullable();
             $table->enum('type', ['invoice','quote'])->default('invoice');
             $table->boolean('is_sent')->default(false);
