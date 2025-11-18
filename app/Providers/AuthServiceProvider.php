@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        // Manager mag ALLES beheren
+        Gate::define('manage-users', function (User $user) {
+            return $user->role && $user->role->name === 'Manager';
+        });
+
+        // INKOOP toegang
+        Gate::define('purchase-access', function ($user) {
+            return in_array($user->role->name, ['Inkoop', 'Manager']);
+        });
+
+        // FINANCE toegang
+        Gate::define('access-finance', function ($user) {
+            return in_array($user->role->name, ['Finance', 'Manager']);
+        });
+
+        // MAINTENANCE toegang (iedereen in maintenance)
+        Gate::define('access-maintenance', function ($user) {
+            return in_array($user->role->name, ['Maintenance', 'MaintenanceManager', 'Manager']);
+        });
+
+        // MAINTENANCE MANAGER (alleen hoofd maintenance + manager)
+        Gate::define('maintenance-manager', function ($user) {
+            return in_array($user->role->name, ['MaintenanceManager', 'Manager','Maintenance']);
+        });
+
+
+
+
+
+
+
+
+    }
+
+}

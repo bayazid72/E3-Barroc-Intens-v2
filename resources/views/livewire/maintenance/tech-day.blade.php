@@ -1,0 +1,42 @@
+<div class="max-w-6xl mx-auto py-8">
+
+    <h1 class="text-2xl font-bold mb-6">Mijn bezoeken (dag)</h1>
+
+    <div class="mb-4">
+        <label class="block mb-1 font-semibold">Datum</label>
+        <input type="date" wire:model.live="selectedDate" class="border rounded px-2 py-1" />
+    </div>
+
+    <div class="bg-white shadow rounded p-4">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b">
+                    <th>Tijd</th>
+                    <th>Klant</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($appointments as $a)
+                    <tr class="border-b">
+                        <td>{{ $a->date_planned?->format('H:i') ?? '-' }}</td>
+                        <td>{{ $a->company->name }}</td>
+                        <td>{{ ucfirst($a->type) }}</td>
+                        <td>{{ ucfirst($a->status) }}</td>
+                        <td class="text-right">
+                            <a href="{{ route('maintenance.workorder.form', $a->id) }}"
+                               class="text-xs px-3 py-1 bg-yellow-500 text-white rounded">
+                                Werkbon
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="5" class="text-center py-3">Geen bezoeken</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+</div>
