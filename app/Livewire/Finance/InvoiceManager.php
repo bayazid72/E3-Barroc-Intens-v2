@@ -115,4 +115,20 @@ class InvoiceManager extends Component
             'invoices' => Invoice::with('company')->orderBy('invoice_date', 'desc')->get()
         ]);
     }
+
+
+    public function deleteInvoice($id)
+        {
+            $invoice = Invoice::findOrFail($id);
+
+            // verwijder gekoppelde regels (als cascade niet werkt)
+            if ($invoice->lines()->count() > 0) {
+                $invoice->lines()->delete();
+            }
+
+            $invoice->delete();
+
+            session()->flash('success', 'Factuur succesvol verwijderd!');
+        }
+
 }

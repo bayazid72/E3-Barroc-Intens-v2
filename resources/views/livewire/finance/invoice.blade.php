@@ -155,6 +155,12 @@
                                     Betaald
                                 </button>
                             @endif
+                            <button
+                                wire:click="deleteInvoice({{ $invoice->id }})"
+                                class="px-3 py-1 bg-red-600 text-white rounded text-xs ml-2">
+                                Verwijderen
+                            </button>
+
 
                         </td>
 
