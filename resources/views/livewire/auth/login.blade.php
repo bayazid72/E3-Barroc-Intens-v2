@@ -148,6 +148,54 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </button>
 
     </div>
+        <div class="mt-4">
+        <p class="text-center text-sm text-gray-600 mb-3">Demo accounts (gebruik elk wachtwoord):</p>
+        <div class="grid grid-cols-2 gap-3">
+            <button
+                type="button"
+                wire:click="$set('email', 'sales@example.com')"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+                Sales
+            </button>
+            <button
+                type="button"
+                wire:click="$set('email', 'inkoop@example.com')"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+                Inkoop
+            </button>
+            <button
+                type="button"
+                wire:click="$set('email', 'finance@example.com')"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+                Financieel
+            </button>
+            <button
+                type="button"
+                wire:click="$set('email', 'maintmanager@example.com')"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+                Onderhoud
+            </button>
+            <button
+                type="button"
+                wire:click="$set('email', 'planning@barroc.nl')"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+                Planning (nog niet werkend)
+            </button>
+            <button
+                type="button"
+                wire:click="$set('email', 'admin@example.com')"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+                Management
+            </button>
+        </div>
+        <p class="text-center text-xs text-gray-500 mt-3">Deze applicatie is beveiligd volgens AVG-richtlijnen</p>
+    </div>
 
 </div>
 
