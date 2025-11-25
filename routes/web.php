@@ -27,6 +27,8 @@ use App\Livewire\Maintenance\CreateAppointment;
 use App\Livewire\Maintenance\EditWorkOrder;
 use App\Livewire\Maintenance\WorkOrderForm;
 use App\Livewire\Maintenance\MaintenanceDashboard;
+use App\Models\LoginAttempt;
+use Illuminate\Support\Facades\Auth;
 
 
 /*
@@ -73,8 +75,15 @@ Route::middleware(['auth'])->group(function () {
             [],
         ))
         ->name('two-factor.show');
-});
+    Route::get('admin/login-logs', function () {
 
+        $logs = LoginAttempt::with('user')
+            ->latest()
+            ->paginate(50);
+
+        return view('livewire.auth.login-logs', compact('logs'));
+    })->name('admin.login-logs');
+});
 
 /*
 |--------------------------------------------------------------------------
