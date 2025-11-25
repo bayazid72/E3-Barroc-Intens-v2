@@ -76,6 +76,12 @@ Route::middleware(['auth'])->group(function () {
         ))
         ->name('two-factor.show');
     Route::get('admin/login-logs', function () {
+        $user = Auth::user();
+
+        // Alleen rollen Admin / Management
+        if (! $user || ! in_array($user->role?->name, ['Admin', 'Manager'])) {
+            abort(403);
+        }
 
         $logs = LoginAttempt::with('user')
             ->latest()
