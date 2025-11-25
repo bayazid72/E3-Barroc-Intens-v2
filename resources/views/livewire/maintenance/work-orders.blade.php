@@ -11,11 +11,14 @@
                     <th>Notities</th>
                     <th>Oplossing</th>
                     <th>Materialen</th>
+                    <th class="w-40">Acties</th>
                 </tr>
             </thead>
+
             <tbody>
                 @forelse($orders as $o)
                     <tr class="border-b">
+
                         <td>{{ $o->appointment?->company?->name ?? 'Onbekend' }}</td>
                         <td>{{ $o->technician?->name ?? 'Geen' }}</td>
 
@@ -31,13 +34,34 @@
                                 -
                             @endif
                         </td>
+
+                        <!-- ⭐ Actieknoppen -->
+                        <td class="flex gap-2 py-2">
+
+                            <!-- Werkbon invullen (formulier) -->
+                            <a href="{{ route('maintenance.workorder.form', $o->id) }}"
+                               class="px-2 py-1 bg-green-600 text-white rounded text-xs">
+                                Invullen
+                            </a>
+
+                            <!-- Bewerken (alleen manager) -->
+                            @can('maintenance-manager')
+                                <a href="{{ route('maintenance.workorder.edit', $o->id) }}"
+                                   class="px-2 py-1 bg-yellow-500 text-white rounded text-xs">
+                                    Bewerken
+                                </a>
+                            @endcan
+
+                        </td>
+
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center py-3">Geen werkbonnen</td>
+                        <td colspan="6" class="text-center py-3">Geen werkbonnen</td>
                     </tr>
                 @endforelse
             </tbody>
+
         </table>
     </div>
 

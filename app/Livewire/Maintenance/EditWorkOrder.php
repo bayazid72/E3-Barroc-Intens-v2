@@ -52,11 +52,11 @@ class EditWorkorder extends Component
 
         session()->flash('success', 'Werkbon succesvol opgeslagen!');
 
-        return redirect()->route('maintenance.workorder', $this->workOrder->id);
+        return redirect()->route('livewire.maintenance.workorder', $this->workOrder->id);
     }
 
     public function render()
     {
-        return view('maintenance.edit-workorder');
+        return view('livewire.maintenance.edit-workorder');
     }
 }
