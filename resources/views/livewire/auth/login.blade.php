@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\LoginAttempt;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -12,6 +13,7 @@ use Laravel\Fortify\Features;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
+
 
 new #[Layout('components.layouts.auth')] class extends Component {
     #[Validate('required|string|email')]
@@ -29,18 +31,15 @@ new #[Layout('components.layouts.auth')] class extends Component {
     {
         $this->validate();
 
-        $this->ensureIsNotRateLimited();
+        // Controleer throttle; als false, ensureIsNotRateLimited voegde al een fout toe.
+        if (! $this->ensureIsNotRateLimited()) {
+            return;
+        }
 
         $user = $this->validateCredentials();
 
-        if (Features::canManageTwoFactorAuthentication() && $user->hasEnabledTwoFactorAuthentication()) {
-            Session::put([
-                'login.id' => $user->getKey(),
-                'login.remember' => $this->remember,
-            ]);
-
-            $this->redirect(route('two-factor.login'), navigate: true);
-
+        // validateCredentials voegde al een fout toe als null
+        if (! $user) {
             return;
         }
 
@@ -49,48 +48,81 @@ new #[Layout('components.layouts.auth')] class extends Component {
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
+        // SUCCESVOLLE LOGIN LOGGEN
+        LoginAttempt::create([
+            'user_id'    => $user->id,
+            'email'      => $this->email,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'successful' => true,
+            'blocked'    => false,
+        ]);
+
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 
     /**
-     * Validate the user's credentials.
+     * Ensure the authentication request is not rate limited.
+     * Return true = ok to continue, false = stopped (and an error was added).
      */
-    protected function validateCredentials(): User
+    protected function ensureIsNotRateLimited(): bool
     {
-        $user = Auth::getProvider()->retrieveByCredentials(['email' => $this->email, 'password' => $this->password]);
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+            return true;
+        }
 
-        if (! $user || ! Auth::getProvider()->validateCredentials($user, ['password' => $this->password])) {
+        // Log de geblokkeerde poging
+        LoginAttempt::create([
+            'user_id'    => null,
+            'email'      => $this->email,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'successful' => false,
+            'blocked'    => true,
+        ]);
+
+        // Voeg Livewire-compatibele fout toe (i.p.v. throw)
+        $seconds = RateLimiter::availableIn($this->throttleKey());
+        $this->addError('email', 'Te veel inlogpogingen. Probeer het over '.$seconds.' seconden opnieuw.', [
+            'seconds' => $seconds,
+            'minutes' => ceil($seconds / 60),
+        ]);
+
+        return false;
+    }
+
+    /**
+     * Validate the user's credentials.
+     * Returns User on success, null on failure (and sets UI error).
+     */
+    protected function validateCredentials(): ?User
+    {
+        $credentials = ['email' => $this->email, 'password' => $this->password];
+
+        $user = Auth::getProvider()->retrieveByCredentials($credentials);
+
+        if (! $user || ! Auth::getProvider()->validateCredentials($user, $credentials)) {
+            // Log de mislukte poging
+            LoginAttempt::create([
+                'user_id'    => $user?->id,
+                'email'      => $this->email,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'successful' => false,
+                'blocked'    => false,
+            ]);
+
+            // Rate limiter hitten
             RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
+            // Geef directe Livewire-validatie feedback
+            $this->addError('email', 'Onjuiste email of wachtwoord');
+
+            return null;
         }
 
         return $user;
     }
-
-    /**
-     * Ensure the authentication request is not rate limited.
-     */
-    protected function ensureIsNotRateLimited(): void
-    {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
-        }
-
-        event(new Lockout(request()));
-
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'email' => __('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
-    }
-
     /**
      * Get the authentication rate limiting throttle key.
      */
@@ -98,10 +130,16 @@ new #[Layout('components.layouts.auth')] class extends Component {
     {
         return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
     }
-}; ?>
+};
+?>
 
 <div class="flex flex-col gap-6">
     <div class="flex flex-col gap-6">
+    @if ($errors->any())
+        <div class="bg-red-100 text-red-700 px-4 py-3 rounded-md text-sm mb-3">
+            {{ $errors->first() }}
+        </div>
+    @endif
 
     <!-- Email -->
     <div class="flex flex-col gap-1">
@@ -196,7 +234,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         </div>
         <p class="text-center text-xs text-gray-500 mt-3">Deze applicatie is beveiligd volgens AVG-richtlijnen</p>
     </div>
-
+    
 </div>
 
 </div>

@@ -35,6 +35,11 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role->name, ['MaintenanceManager', 'Manager','Maintenance']);
         });
 
+        // is admin (voor login logs)
+        Gate::define('view-login-logs', function (User $user) {
+            return (bool) ($user->is_admin ?? false);
+        });
+
 
 
 

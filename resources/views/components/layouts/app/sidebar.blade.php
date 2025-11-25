@@ -105,7 +105,12 @@
         @endif
 
     </flux:navlist>
+        <a href="{{ route('admin.login-logs') }}"
+        class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
+            <div class="font-semibold text-lg">📋 Login Logs</div>
+        </a>
 
+    
     <flux:spacer />
 
 
