@@ -91,6 +91,15 @@
                     <label class="block text-sm font-medium mb-1">Totaalbedrag (€)</label>
                     <input type="number" step="0.01" wire:model="total_amount" class="w-full border rounded px-2 py-1">
                 </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Status</label>
+                    <select wire:model="status" class="w-full border rounded px-2 py-1">
+                        <option value="open">Open</option>
+                        <option value="paid">Betaald</option>
+                        <option value="overdue">Achterstallig</option>
+                    </select>
+                </div>
+
 
                 <div class="flex gap-3">
                     <button class="px-4 py-2 bg-blue-600 text-white rounded">Opslaan</button>
@@ -101,6 +110,7 @@
                         Annuleren
                     </button>
                 </div>
+
 
             </form>
         </div>

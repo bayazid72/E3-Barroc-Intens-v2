@@ -26,12 +26,12 @@
             <p class="text-gray-600 mt-2">Voorraad aanvullen en voorraadmutaties bekijken.</p>
         </a>
 
-        {{-- Leveranciers --}}
+        {{-- Leveranciers
         <a href="{{ route('purchase.suppliers') }}"
            class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition block">
             <h2 class="text-xl font-semibold">Leveranciers</h2>
             <p class="text-gray-600 mt-2">Bekijk producten per leverancier.</p>
-        </a>
+        </a>--}}
 
     </div>
 

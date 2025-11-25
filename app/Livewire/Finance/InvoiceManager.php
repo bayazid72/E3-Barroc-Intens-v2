@@ -18,6 +18,8 @@ class InvoiceManager extends Component
     public $total_amount;
 
     public $companies;
+    public $status;
+
 
     public function mount()
     {
@@ -85,6 +87,7 @@ class InvoiceManager extends Component
         $this->company_id = $invoice->company_id;
         $this->invoice_date = $invoice->invoice_date;
         $this->total_amount = $invoice->total_amount;
+        $this->status = $invoice->status;
     }
 
     public function updateInvoice()
@@ -93,6 +96,8 @@ class InvoiceManager extends Component
             'company_id' => 'required|exists:companies,id',
             'invoice_date' => 'required|date',
             'total_amount' => 'required|numeric|min:0',
+            'status' => 'required|in:open,paid,overdue',
+
         ]);
 
         $invoice = Invoice::findOrFail($this->editingInvoiceId);
@@ -101,6 +106,7 @@ class InvoiceManager extends Component
             'company_id' => $this->company_id,
             'invoice_date' => $this->invoice_date,
             'total_amount' => $this->total_amount,
+            'status'       => $this->status,
         ]);
 
         $this->reset(['editing','editingInvoiceId','company_id','invoice_date','total_amount']);
