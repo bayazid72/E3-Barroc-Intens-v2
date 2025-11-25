@@ -10,7 +10,7 @@ class Appointment extends Model
         'company_id',
         'technician_id',
         'type',
-        'malfunction_description',
+        'description',
         'date_planned',
         'date_added',
         'status',

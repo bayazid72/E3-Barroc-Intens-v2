@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
     @include('partials.head')
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js'></script>
 </head>
 <body class="min-h-screen bg-white dark:bg-zinc-800">
 
@@ -110,7 +111,7 @@
             <div class="font-semibold text-lg">📋 Login Logs</div>
         </a>
 
-    
+
     <flux:spacer />
 
 

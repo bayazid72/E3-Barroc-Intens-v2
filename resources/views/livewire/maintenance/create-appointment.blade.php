@@ -40,12 +40,13 @@
             </select>
         </div>
 
-        @if($type === 'malfunction')
-            <div>
-                <label class="font-semibold">Omschrijving storing</label>
-                <textarea wire:model="malfunction_description" class="w-full border rounded px-2 py-1"></textarea>
-            </div>
-        @endif
+        <div>
+            <label class="font-semibold">Omschrijving</label>
+            <textarea wire:model="description"
+                      class="w-full border rounded px-2 py-1"
+                      rows="3"></textarea>
+            @error('description') <p class="text-red-600 text-sm">{{ $message }}</p>@enderror
+        </div>
 
         <div>
             <label class="font-semibold">Datum & tijd</label>

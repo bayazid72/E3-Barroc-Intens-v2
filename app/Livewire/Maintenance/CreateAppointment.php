@@ -13,7 +13,7 @@ class CreateAppointment extends Component
     public $company_id;
     public $technician_id;
     public $type = 'routine';
-    public $malfunction_description;
+    public $description;
     public $date_planned;
 
     public $companies = [];
@@ -39,7 +39,7 @@ class CreateAppointment extends Component
     'company_id'              => $this->company_id,
     'technician_id'           => $this->technician_id,
     'type'                    => $this->type,
-    'malfunction_description' => $this->malfunction_description,
+    'description' => $this->description,
     'date_planned'            => $this->date_planned,
     'date_added'              => now(),
     'status'                  => $this->technician_id ? 'planned' : 'open',

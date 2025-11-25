@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->foreignId('company_id')->constrained('companies');
             $table->foreignId('technician_id')->nullable()->constrained('users');
             $table->enum('type', ['malfunction','routine','installation']);
-            $table->longText('malfunction_description')->nullable();
+            $table->longText('description')->nullable();
             $table->dateTime('date_planned')->nullable();
             $table->dateTime('date_added');
             $table->enum('status', ['open','planned','done','cancelled'])->default('open');

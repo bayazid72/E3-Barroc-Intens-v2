@@ -28,6 +28,8 @@ use App\Livewire\Maintenance\EditWorkOrder;
 use App\Livewire\Maintenance\WorkOrderForm;
 use App\Livewire\Maintenance\MaintenanceDashboard;
 use App\Models\LoginAttempt;
+use App\Livewire\Maintenance\ViewAppointment;
+
 use Illuminate\Support\Facades\Auth;
 
 
@@ -192,4 +194,7 @@ Route::middleware(['auth', 'can:access-maintenance'])
         Route::get('/afspraak/nieuw', CreateAppointment::class)
             ->middleware('can:maintenance-manager')
             ->name('create');
+        Route::get('/view/{appointment}', \App\Livewire\Maintenance\ViewAppointment::class)
+             ->name('maintenance.view');
+
     });
