@@ -200,7 +200,12 @@ Route::middleware(['auth', 'can:access-maintenance'])
         Route::get('/afspraak/nieuw', CreateAppointment::class)
             ->middleware('can:maintenance-manager')
             ->name('create');
+          //view van een appointment
         Route::get('/view/{appointment}', \App\Livewire\Maintenance\ViewAppointment::class)
              ->name('maintenance.view');
+             // Afspraak bewerken
+         Route::get('/afspraak/{appointment}/edit', \App\Livewire\Maintenance\EditAppointment::class)
+            ->name('edit');
+
 
     });
