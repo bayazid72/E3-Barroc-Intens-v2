@@ -85,7 +85,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
         $seconds = RateLimiter::availableIn($this->throttleKey());
         $this->addError('email', 'Te veel inlogpogingen. Probeer het over '.$seconds.' seconden opnieuw.', [
             'seconds' => $seconds,
-            'minutes' => ceil($seconds / 60),
+            'minutes' => ceil($seconds / 30),
         ]);
 
         return false;

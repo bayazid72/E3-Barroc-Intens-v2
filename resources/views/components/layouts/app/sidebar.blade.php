@@ -26,7 +26,6 @@
             </flux:navlist.item>
         </flux:navlist.group>
 
-
         {{-- 1. GEBRUIKERSBEHEER --}}
         @can('manage-users')
             <a href="{{ route('users.index') }}"
@@ -80,23 +79,12 @@
                     <div class="font-semibold text-lg">🛠️ Maintenance</div>
                 </a>
         @endcan
-
-
-
-
     {{-- Voor alle maintenance medewerkers --}}
-
 
 @endif
 @can('maintenance-manager')
 
 @endcan
-
-
-
-
-
-
         {{-- 6. CONTRACTEN --}}
         @if(in_array(auth()->user()->role?->name, ['Finance','Manager']))
             <a href="/finance/contracten"
@@ -106,14 +94,18 @@
         @endif
 
     </flux:navlist>
-        <a href="{{ route('admin.login-logs') }}"
-        class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-            <div class="font-semibold text-lg">📋 Login Logs</div>
-        </a>
+        @php($user = auth()->user())
+
+        {{-- LOGIN LOGS - alleen voor Admin / Management rollen --}}
+        @if($user && in_array($user->role?->name, ['Admin', 'Manager']))
+            <a href="{{ route('admin.login-logs') }}"
+            class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
+                <div class="font-semibold text-lg">📋 Login Logs</div>
+            </a>
+        @endif
 
 
     <flux:spacer />
-
 
     {{-- PROFILE / LOGOUT --}}
     <flux:dropdown class="mt-auto" position="bottom" align="start">
@@ -123,7 +115,6 @@
             icon:trailing="chevrons-up-down"
             data-test="sidebar-menu-button"
         />
-
         <flux:menu class="w-[220px]">
             <flux:menu.radio.group>
                 <div class="p-0 text-sm font-normal">
@@ -140,22 +131,17 @@
                     </div>
                 </div>
             </flux:menu.radio.group>
-
             <flux:menu.separator />
-
             <flux:menu.radio.group>
                 <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>Settings</flux:menu.item>
             </flux:menu.radio.group>
-
             <flux:menu.separator />
-
             <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
                 <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
                     Log Out
                 </flux:menu.item>
             </form>
-
         </flux:menu>
     </flux:dropdown>
 
