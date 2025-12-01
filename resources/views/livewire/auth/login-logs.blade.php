@@ -1,6 +1,38 @@
 <x-layouts.app :title="__('Login Logs')">
 <div>
     <h1 class="text-xl font-semibold mb-4">Login logs</h1>
+    <form method="GET" action="{{ route('admin.login-logs') }}" class="mb-4 flex flex-wrap gap-3 items-center">
+    <input
+        type="text"
+        name="search"
+        value="{{ request('search') }}"
+        placeholder="Zoek op email of naam..."
+        class="border border-gray-300 rounded-md px-3 py-2 text-sm"
+    />
+
+    <select
+        name="status"
+        class="border border-gray-300 rounded-md px-3 py-2 text-sm"
+    >
+        <option value="">Alle statussen</option>
+        <option value="successful" {{ request('status') === 'successful' ? 'selected' : '' }}>Succesvol</option>
+        <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>Mislukt</option>
+        <option value="blocked" {{ request('status') === 'blocked' ? 'selected' : '' }}>Geblokkeerd</option>
+    </select>
+
+    <button
+        type="submit"
+        class="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-4 py-2 rounded-md text-sm"
+    >
+        Filter
+    </button>
+
+    @if(request()->has('search') || request()->has('status'))
+        <a href="{{ route('admin.login-logs') }}" class="text-sm text-gray-500 underline">
+            Reset
+        </a>
+    @endif
+    </form>
 
     <table class="min-w-full border text-sm">
         <thead>

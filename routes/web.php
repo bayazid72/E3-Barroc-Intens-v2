@@ -78,16 +78,39 @@ Route::middleware(['auth'])->group(function () {
         ))
         ->name('two-factor.show');
     Route::get('admin/login-logs', function () {
-        $user = Auth::user();
+        $user = auth()->user();
 
-        // Alleen rollen Admin / Management
+        // Alleen Admin / Manager mogen deze pagina zien
         if (! $user || ! in_array($user->role?->name, ['Admin', 'Manager'])) {
             abort(403);
         }
 
-        $logs = LoginAttempt::with('user')
-            ->latest()
-            ->paginate(50);
+        // 👇 HIER bouw je de query op
+        $query = LoginAttempt::with('user')->latest();
+
+        // Zoekterm (email of naam)
+        if ($search = request('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('email', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Status-filter: successful / failed / blocked
+        if ($status = request('status')) {
+            if ($status === 'successful') {
+                $query->where('successful', true);
+            } elseif ($status === 'failed') {
+                $query->where('successful', false)->where('blocked', false);
+            } elseif ($status === 'blocked') {
+                $query->where('blocked', true);
+            }
+        }
+
+        // Uiteindelijk de query uitvoeren + filters in de paginatie URL houden
+        $logs = $query->paginate(50)->withQueryString();
 
         return view('livewire.auth.login-logs', compact('logs'));
     })->name('admin.login-logs');
