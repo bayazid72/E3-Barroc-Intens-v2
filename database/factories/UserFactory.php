@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;   
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -23,6 +24,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $defaultRole = Role::firstOrCreate(['name' => 'Manager']);
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
@@ -32,6 +34,8 @@ class UserFactory extends Factory
             'two_factor_secret' => Str::random(10),
             'two_factor_recovery_codes' => Str::random(10),
             'two_factor_confirmed_at' => now(),
+
+            'role_id' => $defaultRole->id,
         ];
     }
 
@@ -56,4 +60,19 @@ class UserFactory extends Factory
             'two_factor_confirmed_at' => null,
         ]);
     }
+
+    /**
+     * User met Planner rol.
+     */
+    public function planner(): static
+    {
+        return $this->state(function (array $attributes) {
+            $plannerRole = Role::firstOrCreate(['name' => 'Planner']);
+
+            return [
+                'role_id' => $plannerRole->id,
+            ];
+        });
+    }
+
 }

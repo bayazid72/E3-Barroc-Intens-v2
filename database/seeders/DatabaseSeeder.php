@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             'Inkoop',
             'Manager',
             'MaintenanceManager',
+            'Planner',
         ];
 
         foreach ($roles as $name) {
@@ -39,6 +40,7 @@ class DatabaseSeeder extends Seeder
             'Sales'              => ['Sales User', 'sales@example.com'],
             'Inkoop'             => ['Inkoop User', 'inkoop@example.com'],
             'MaintenanceManager' => ['Maintenance Manager', 'maintmanager@example.com'],
+            'Planner'            => ['Planner User', 'planner@example.com'],
         ];
 
         foreach ($users as $roleName => $info) {
@@ -164,7 +166,7 @@ class DatabaseSeeder extends Seeder
          * 8. Appointment
          * ===========================================
         */
-        $technician = User::whereHas('role', fn($q) => $q->where('name', 'Maintenance'))->first();
+        $technician = User::whereHas('role', fn($q) => $q->where('name', 'MaintenanceManager'))->first();
 
         $appointment = Appointment::create([
     'company_id' => $company->id,

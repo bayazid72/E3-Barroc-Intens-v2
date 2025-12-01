@@ -219,10 +219,10 @@ new #[Layout('components.layouts.auth')] class extends Component {
             </button>
             <button
                 type="button"
-                wire:click="$set('email', 'planning@barroc.nl')"
+                wire:click="$set('email', 'planner@example.com')"
                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
             >
-                Planning (nog niet werkend)
+                Planning
             </button>
             <button
                 type="button"
