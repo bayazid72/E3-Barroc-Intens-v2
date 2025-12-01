@@ -115,11 +115,14 @@ Route::middleware(['auth', 'can:purchase-access'])
     ->prefix('purchase')
     ->name('purchase.')
     ->group(function () {
-
         Route::get('/', PurchaseDashboard::class)->name('dashboard');
         Route::get('/products', ProductManager::class)->name('products');
         Route::get('/stock', StockManager::class)->name('stock');
         Route::get('/suppliers', SupplierManager::class)->name('suppliers');
+        
+        // Paid invoices management
+        Route::get('/paid-invoices', \App\Livewire\Purchase\PaidInvoicesManager::class)->name('paid-invoices.index');
+        Route::get('/paid-invoices/{invoice}', \App\Livewire\Purchase\PaidInvoiceDetail::class)->name('paid-invoices.show');
     });
 
 
@@ -128,11 +131,14 @@ Route::middleware(['auth', 'can:access-inkoop'])
     ->prefix('inkoop')
     ->name('purchase.')
     ->group(function () {
-
         Route::get('/', PurchaseDashboard::class)->name('dashboard');
         Route::get('/producten', ProductManager::class)->name('products');
         Route::get('/voorraad', StockManager::class)->name('stock');
         Route::get('/leveranciers', SupplierManager::class)->name('suppliers');
+        
+        // Paid invoices management (Dutch)
+        Route::get('/betaalde-facturen', \App\Livewire\Purchase\PaidInvoicesManager::class)->name('paid-invoices.index');
+        Route::get('/betaalde-facturen/{invoice}', \App\Livewire\Purchase\PaidInvoiceDetail::class)->name('paid-invoices.show');
     });
 
 
@@ -146,15 +152,13 @@ Route::middleware(['auth', 'can:access-finance'])
     ->prefix('finance')
     ->name('finance.')
     ->group(function () {
-
         Route::get('/contracten', ContractManager::class)->name('contracts');
-    });
-
-Route::middleware(['auth'])
-    ->middleware('can:access-finance')
-    ->group(function () {
-
-        Route::get('/finance/facturen', InvoiceManager::class)->name('finance.invoices');
+        Route::get('/facturen', InvoiceManager::class)->name('invoices');
+        Route::get('/facturen/{invoice}', \App\Livewire\Finance\InvoiceShow::class)->name('invoices.show');
+        
+        // Quote routes
+        Route::get('/offertes', \App\Livewire\Finance\QuoteList::class)->name('quotes.index');
+        Route::get('/offertes/{quote}', \App\Livewire\Finance\QuoteShow::class)->name('quotes.show');
     });
 
 

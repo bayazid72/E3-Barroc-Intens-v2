@@ -38,13 +38,11 @@ class InvoiceManager extends Component
 
     public function markAsPaid($id)
     {
-        $invoice = Invoice::findOrFail($id);
+        $invoice = Invoice::withoutGlobalScope('invoice')->findOrFail($id);
 
-        $invoice->update([
-            'status' => 'paid',
-        ]);
+        $invoice->markAsPaid();
 
-        session()->flash('success', 'Factuur gemarkeerd als betaald!');
+        session()->flash('success', 'Factuur gemarkeerd als betaald! Inkoop is genotificeerd.');
     }
 
 
