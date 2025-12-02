@@ -57,24 +57,34 @@ class InvoiceCreate extends Component
         $contract = Contract::with('lines.product')->find($this->contract_id);
         
         if ($contract) {
+            $this->company_id = $contract->company_id;
             $this->lines = [];
             foreach ($contract->lines as $contractLine) {
                 $this->lines[] = [
                     'product_id' => $contractLine->product_id,
                     'description' => $contractLine->product->name ?? '',
-                    'quantity' => $contractLine->quantity,
-                    'unit_price' => $contractLine->price,
+                    'quantity' => $contractLine->amount,
+                    'unit_price' => $contractLine->price_snapshot,
                 ];
             }
         }
     }
 
-    public function updateProductLine($productId, $index)
+    public function updatedLines($value, $key)
     {
-        $product = Product::find($productId);
-        if ($product) {
-            $this->lines[$index]['description'] = $product->name;
-            $this->lines[$index]['unit_price'] = $product->price ?? 0;
+        // Check if a product_id was updated
+        if (str_contains($key, '.product_id')) {
+            // Extract the index from the key (e.g., "0.product_id" -> 0)
+            $index = explode('.', $key)[0];
+            $productId = $this->lines[$index]['product_id'] ?? null;
+            
+            if ($productId) {
+                $product = Product::find($productId);
+                if ($product) {
+                    $this->lines[$index]['description'] = $product->name;
+                    $this->lines[$index]['unit_price'] = $product->price;
+                }
+            }
         }
     }
 
@@ -134,10 +144,8 @@ class InvoiceCreate extends Component
                 InvoiceLine::create([
                     'invoice_id' => $invoice->id,
                     'product_id' => $line['product_id'] ?: null,
-                    'description' => $line['description'],
-                    'quantity' => $line['quantity'],
-                    'unit_price' => $line['unit_price'],
-                    'total_price' => $line['quantity'] * $line['unit_price'],
+                    'amount' => $line['quantity'],
+                    'price_snapshot' => $line['unit_price'],
                     'delivery_status' => 'not_delivered',
                 ]);
             }

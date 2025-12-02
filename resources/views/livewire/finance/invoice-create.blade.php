@@ -108,13 +108,12 @@
                                 <div class="col-span-12 md:col-span-3">
                                     <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Product (optioneel)</label>
                                     <select 
-                                        wire:model="lines.{{ $index }}.product_id"
-                                        wire:change="updateProductLine($event.target.value, {{ $index }})"
+                                        wire:model.live="lines.{{ $index }}.product_id"
                                         class="block w-full text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                     >
                                         <option value="">Selecteer...</option>
                                         @foreach($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                            <option value="{{ $product->id }}">{{ $product->name }} - €{{ number_format($product->price, 2, ',', '.') }}</option>
                                         @endforeach
                                     </select>
                                 </div>

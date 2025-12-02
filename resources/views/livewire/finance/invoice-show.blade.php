@@ -68,7 +68,9 @@
                     <div class="font-semibold">{{ $invoice->invoice_date->format('d-m-Y') }}</div>
                     @if($invoice->paid_at)
                         <div class="mt-2 text-green-600 font-semibold text-sm">
-                            <flux:icon.check-circle class="size-4 inline" />
+                            <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                             BETAALD
                         </div>
                     @else
@@ -175,7 +177,9 @@
                 @if($invoice->paid_at)
                     <div class="bg-green-50 p-4 rounded-lg">
                         <div class="text-sm font-semibold text-green-800 mb-2">
-                            <flux:icon.check-circle class="size-5 inline" />
+                            <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                             Status: BETAALD
                         </div>
                         <div class="text-sm text-green-700 space-y-1">
@@ -191,7 +195,9 @@
                 @else
                     <div class="bg-orange-50 p-4 rounded-lg">
                         <div class="text-sm font-semibold text-orange-800 mb-2">
-                            <flux:icon.clock class="size-5 inline" />
+                            <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                             Status: OPENSTAAND
                         </div>
                         <div class="text-sm text-orange-700">
