@@ -1,36 +1,25 @@
-<div class="max-w-6xl mx-auto py-8">
+<div class="max-w-5xl mx-auto py-6">
 
-    <h1 class="text-2xl font-bold mb-6">Maintenance Dashboard</h1>
+    <h1 class="text-2xl font-bold mb-6">Mijn Monteurs Dashboard</h1>
 
-    {{-- INFO meldingen --}}
-    @if (session('success'))
-        <div class="mb-4 p-2 bg-green-100 border border-green-400 text-green-800 rounded">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    {{-- Tegels --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        {{-- Storingen --}}
-        <a href="{{ route('maintenance.malfunctions') }}"
-           class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition block">
-            <h2 class="text-xl font-semibold">Storingen</h2>
-            <p class="text-gray-600 mt-2">Ingekomen storingen bekijken en opvolgen.</p>
+        <a href="{{ route('maintenance.visits.day') }}"
+           class="p-6 rounded bg-purple-100 hover:bg-purple-200 shadow">
+            <h2 class="font-bold">📆 Mijn bezoeken (dag)</h2>
+            <p class="text-neutral-600 mt-2">Overzicht van vandaag.</p>
         </a>
 
-        {{-- Planning --}}
-        <a href="{{ route('maintenance.planning') }}"
-           class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition block">
-            <h2 class="text-xl font-semibold">Planning</h2>
-            <p class="text-gray-600 mt-2">Bekijk je ingeplande afspraken in een kalender.</p>
+        <a href="{{ route('maintenance.visits.week') }}"
+           class="p-6 rounded bg-indigo-100 hover:bg-indigo-200 shadow">
+            <h2 class="font-bold">🗓️ Mijn bezoeken (week)</h2>
+            <p class="text-neutral-600 mt-2">Weekplanning.</p>
         </a>
 
-        {{-- Werkbonnen --}}
         <a href="{{ route('maintenance.workorders') }}"
-           class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition block">
-            <h2 class="text-xl font-semibold">Werkbonnen</h2>
-            <p class="text-gray-600 mt-2">Bekijk en vul werkbonnen in voor je bezoeken.</p>
+           class="p-6 rounded bg-green-100 hover:bg-green-200 shadow">
+            <h2 class="font-bold">📘 Werkbonnen</h2>
+            <p class="text-neutral-600 mt-2">Bekijk of vul werkbonnen in.</p>
         </a>
 
     </div>

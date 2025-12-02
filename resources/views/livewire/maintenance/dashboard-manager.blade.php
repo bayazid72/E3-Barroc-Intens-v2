@@ -7,7 +7,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <div class="p-6 bg-white shadow rounded text-center">
-            <div class="text-3xl font-bold text-red-500">{{ $openMalfunctions }}</div>
+            <div class="text-3xl font-bold text-red-500">{{ $openstoring }}</div>
             <div class="text-neutral-600">Open storingen</div>
         </div>
 
@@ -32,17 +32,20 @@
             <p class="text-neutral-600 mt-2">Ingekomen storingen bekijken en opvolgen.</p>
         </a>
 
-        <a href="{{ route('maintenance.planning') }}"
-           class="p-6 rounded bg-blue-100 hover:bg-blue-200 shadow">
-            <h2 class="font-bold">📅 Planning</h2>
-            <p class="text-neutral-600 mt-2">Afspraken beheren en kalender-overzicht.</p>
+        <a href="{{ route('maintenance.notifications') }}"
+            class="p-6 rounded bg-blue-100 hover:bg-blue-200 shadow">
+                <h2 class="font-bold">🔔 Notificaties</h2>
+                <p class="text-neutral-600 mt-2"> Notificaties beheren</p>
         </a>
+
 
         <a href="{{ route('maintenance.workorders') }}"
            class="p-6 rounded bg-green-100 hover:bg-green-200 shadow">
             <h2 class="font-bold">📘 Werkbonnen</h2>
             <p class="text-neutral-600 mt-2">Werkbonnen invullen en controleren.</p>
         </a>
+</a>
+
 
     </div>
 

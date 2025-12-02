@@ -8,14 +8,14 @@ use App\Models\WorkOrder;
 
 class DashboardManager extends Component
 {
-    public int $openMalfunctions = 0;
+    public int $openstoring = 0;
     public int $plannedToday = 0;
     public int $finishedWorkorders = 0;
 
     public function mount()
     {
         // 1) Open storingen (type = malfunction + status != done)
-        $this->openMalfunctions = Appointment::where('type', 'malfunction')
+        $this->openstoring = Appointment::where('type', 'storing')
             ->where('status', '!=', 'done')
             ->count();
 

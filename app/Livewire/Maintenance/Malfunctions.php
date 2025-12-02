@@ -11,7 +11,7 @@ class Malfunctions extends Component
     {
         return view('livewire.maintenance.malfunctions', [
             'malfunctions' => Appointment::with('company')
-                ->where('type', 'malfunction')
+                ->where('type', 'storing')
                 ->orderBy('date_added', 'desc')
                 ->get(),
         ]);

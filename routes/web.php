@@ -202,6 +202,7 @@ Route::middleware(['auth', 'can:access-maintenance'])
 
         // Dashboards
         Route::get('/', MaintenanceDashboard::class)->name('dashboard');
+
         Route::get('/manager', DashboardManager::class)
             ->middleware('can:maintenance-manager')
             ->name('dashboard.manager');
@@ -219,16 +220,27 @@ Route::middleware(['auth', 'can:access-maintenance'])
         // Storingen
         Route::get('/storingen', Malfunctions::class)->name('malfunctions');
 
-        // Nieuwe afspraak (alleen manager)
+        // Nieuwe afspraak
         Route::get('/afspraak/nieuw', CreateAppointment::class)
             ->middleware('can:maintenance-manager')
             ->name('create');
-          //view van een appointment
+
+        // Afspraak details + edit
         Route::get('/view/{appointment}', \App\Livewire\Maintenance\ViewAppointment::class)
-             ->name('maintenance.view');
-             // Afspraak bewerken
-         Route::get('/afspraak/{appointment}/edit', \App\Livewire\Maintenance\EditAppointment::class)
+            ->name('view');
+
+        Route::get('/afspraak/{appointment}/edit', \App\Livewire\Maintenance\EditAppointment::class)
             ->name('edit');
 
+        // Monteur dag/week
+        Route::get('/mijn-bezoeken/dag', \App\Livewire\Maintenance\TechnicianDayView::class)
+            ->name('visits.day');
 
-    });
+        Route::get('/mijn-bezoeken/week', \App\Livewire\Maintenance\TechnicianWeekView::class)
+            ->name('visits.week');
+
+        // 🔔 NOTIFICATIES (dit moest binnen deze groep!)
+        Route::get('/notificaties', \App\Livewire\Maintenance\Notifications::class)
+            ->middleware('can:maintenance-manager')
+            ->name('notifications');
+});

@@ -52,7 +52,7 @@ class EditWorkorder extends Component
 
         session()->flash('success', 'Werkbon succesvol opgeslagen!');
 
-        return redirect()->route('livewire.maintenance.workorder', $this->workOrder->id);
+        return redirect()->route('maintenance.workorder.form', $this->workOrder->id);
     }
 
     public function render()

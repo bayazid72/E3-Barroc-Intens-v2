@@ -31,7 +31,7 @@ class CreateAppointment extends Component
 {
     $this->validate([
         'company_id'   => 'required|exists:companies,id',
-        'type'         => 'required|in:malfunction,routine,installation',
+        'type'         => 'required|in:storing,routine,installation',
         'date_planned' => 'required|date',
     ]);
 

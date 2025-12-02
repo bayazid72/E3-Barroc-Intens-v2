@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             'Inkoop',
             'Manager',
             'MaintenanceManager',
+            'Maintenance',
             'Planner',
         ];
 
@@ -40,6 +41,7 @@ class DatabaseSeeder extends Seeder
             'Sales'              => ['Sales User', 'sales@example.com'],
             'Inkoop'             => ['Inkoop User', 'inkoop@example.com'],
             'MaintenanceManager' => ['Maintenance Manager', 'maintmanager@example.com'],
+            'Maintenance'        => ['Maintenance', 'maint@example.com'],
             'Planner'            => ['Planner User', 'planner@example.com'],
         ];
 

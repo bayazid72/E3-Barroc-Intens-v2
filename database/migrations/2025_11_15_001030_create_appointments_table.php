@@ -10,7 +10,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('company_id')->constrained('companies');
             $table->foreignId('technician_id')->nullable()->constrained('users');
-            $table->enum('type', ['malfunction','routine','installation']);
+            $table->enum('type', ['storing','routine','installation']);
             $table->longText('description')->nullable();
             $table->dateTime('date_planned')->nullable();
             $table->dateTime('date_added');

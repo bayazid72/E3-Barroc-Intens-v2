@@ -34,7 +34,7 @@
         <div>
             <label class="font-semibold">Type</label>
             <select wire:model="type" class="w-full border rounded px-2 py-1">
-                <option value="malfunction">Storing</option>
+                <option value="storing">Storing</option>
                 <option value="routine">Routinebezoek</option>
                 <option value="installation">Installatie</option>
             </select>

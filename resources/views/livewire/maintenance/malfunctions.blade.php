@@ -7,7 +7,7 @@
             <thead>
                 <tr class="border-b">
                     <th>Klant</th>
-                    <th>Beschrijving</th>
+                    <th>Monteur</th>
                     <th>Status</th>
                     <th>Aangemeld</th>
                 </tr>
@@ -16,7 +16,7 @@
                 @forelse($malfunctions as $m)
                     <tr class="border-b">
                         <td>{{ $m->company->name }}</td>
-                        <td>{{ $m->malfunction_description }}</td>
+                        <td>{{ $m->technician?->name ?? 'Geen monteur' }}</td>
                         <td>{{ ucfirst($m->status) }}</td>
                         <td>{{ $m->date_added?->format('d-m-Y H:i') }}</td>
                     </tr>

@@ -61,30 +61,37 @@
             </a>
         @endif
 
-        @if(in_array(auth()->user()->role?->name, ['maintenance']))
-            <a href="/maintenance"
-               class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">📦 Voorraad & Inkoop</div>
-            </a>
-        @endif
 
-        {{-- 5. MAINTENANCE --}}
-        @if(auth()->user()->can(abilities: 'access-maintenance'))
+       {{-- 5. MAINTENANCE --}}
+        @can('access-maintenance')
+            {{-- MONTEUR DASHBOARD (alleen Maintenance) --}}
+            @can('maintenance-tech')
+                <a href="{{ route('maintenance.dashboard') }}"
+                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
+                    <div class="font-semibold text-lg">🛠️ Dashboard</div>
+                </a>
+
+                <a href="{{ route('maintenance.planning') }}"
+                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
+                    <div class="font-semibold text-lg">📅 Planning</div>
+                </a>
+
+                <a href="{{ route('maintenance.workorders') }}"
+                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
+                    <div class="font-semibold text-lg">📘 Werkbonnen</div>
+                </a>
+            @endcan
 
 
-            {{-- Alleen hoofd maintenance (MaintenanceManager + Manager) --}}
-            @can('maintenance-manager','maintenance')
+            {{-- HOOFD MAINTENANCE + MANAGER --}}
+            @can('maintenance-manager')
                 <a href="{{ route('maintenance.dashboard.manager') }}"
                 class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
-                    <div class="font-semibold text-lg">🛠️ Maintenance</div>
+                    <div class="font-semibold text-lg">📊 Maintenance</div>
                 </a>
+            @endcan
         @endcan
-    {{-- Voor alle maintenance medewerkers --}}
 
-@endif
-@can('maintenance-manager')
-
-@endcan
         {{-- 6. CONTRACTEN --}}
         @if(in_array(auth()->user()->role?->name, ['Finance','Manager']))
             <a href="/finance/contracten"
@@ -92,6 +99,9 @@
                 <div class="font-semibold text-lg">📑 Contracten</div>
             </a>
         @endif
+
+
+
 
     </flux:navlist>
         @php($user = auth()->user())
