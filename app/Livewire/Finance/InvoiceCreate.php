@@ -78,6 +78,24 @@ class InvoiceCreate extends Component
         }
     }
 
+    // Computed properties for totals
+    public function getSubtotalProperty()
+    {
+        return collect($this->lines)->sum(function ($line) {
+            return ($line['quantity'] ?? 0) * ($line['unit_price'] ?? 0);
+        });
+    }
+
+    public function getBtwProperty()
+    {
+        return $this->subtotal * 0.21;
+    }
+
+    public function getTotalProperty()
+    {
+        return $this->subtotal + $this->btw;
+    }
+
     public function createInvoice()
     {
         $this->validate([

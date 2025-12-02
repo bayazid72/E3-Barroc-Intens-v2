@@ -134,7 +134,7 @@
                                     <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Aantal *</label>
                                     <input 
                                         type="number" 
-                                        wire:model="lines.{{ $index }}.quantity"
+                                        wire:model.live="lines.{{ $index }}.quantity"
                                         min="1"
                                         step="1"
                                         class="block w-full text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
@@ -145,7 +145,7 @@
                                     <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Prijs (€) *</label>
                                     <input 
                                         type="number" 
-                                        wire:model="lines.{{ $index }}.unit_price"
+                                        wire:model.live="lines.{{ $index }}.unit_price"
                                         min="0"
                                         step="0.01"
                                         class="block w-full text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
@@ -179,24 +179,17 @@
                 <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex justify-end">
                         <div class="w-64">
-                            @php
-                                $subtotal = collect($lines)->sum(function($line) {
-                                    return ($line['quantity'] ?? 0) * ($line['unit_price'] ?? 0);
-                                });
-                                $btw = $subtotal * 0.21;
-                                $total = $subtotal + $btw;
-                            @endphp
                             <div class="flex justify-between text-sm mb-2">
                                 <span class="text-gray-600 dark:text-gray-400">Subtotaal:</span>
-                                <span class="text-gray-900 dark:text-white">€{{ number_format($subtotal, 2, ',', '.') }}</span>
+                                <span class="text-gray-900 dark:text-white">€{{ number_format($this->subtotal, 2, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between text-sm mb-2">
                                 <span class="text-gray-600 dark:text-gray-400">BTW (21%):</span>
-                                <span class="text-gray-900 dark:text-white">€{{ number_format($btw, 2, ',', '.') }}</span>
+                                <span class="text-gray-900 dark:text-white">€{{ number_format($this->btw, 2, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-gray-700 pt-2">
                                 <span class="text-gray-900 dark:text-white">Totaal:</span>
-                                <span class="text-blue-600 dark:text-blue-400">€{{ number_format($total, 2, ',', '.') }}</span>
+                                <span class="text-blue-600 dark:text-blue-400">€{{ number_format($this->total, 2, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>
