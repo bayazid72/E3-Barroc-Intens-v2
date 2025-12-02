@@ -69,9 +69,9 @@ class InvoiceCreate extends Component
         }
     }
 
-    public function updatedProductId($value, $index)
+    public function updateProductLine($productId, $index)
     {
-        $product = Product::find($value);
+        $product = Product::find($productId);
         if ($product) {
             $this->lines[$index]['description'] = $product->name;
             $this->lines[$index]['unit_price'] = $product->price ?? 0;
