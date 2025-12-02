@@ -6,6 +6,8 @@ use App\Models\Contract;
 use App\Models\ContractLine;
 use App\Models\Product;
 use App\Models\Company;
+use App\Models\Invoice;
+use App\Models\InvoiceLine;
 use Livewire\Component;
 
 class ContractManager extends Component
@@ -126,6 +128,50 @@ class ContractManager extends Component
         $contract->delete();
 
         session()->flash('success', 'Contract verwijderd.');
+    }
+
+    public function generateInvoice($contractId)
+    {
+        try {
+            $contract = Contract::with(['company', 'lines.product'])->findOrFail($contractId);
+
+            // Check if contract has lines
+            if ($contract->lines->isEmpty()) {
+                session()->flash('error', 'Contract heeft geen regels om te factureren.');
+                return;
+            }
+
+            // Calculate total
+            $totalAmount = $contract->lines->sum(function ($line) {
+                return $line->amount * $line->price_snapshot;
+            });
+
+            // Create invoice
+            $invoice = Invoice::create([
+                'type' => 'invoice',
+                'company_id' => $contract->company_id,
+                'contract_id' => $contract->id,
+                'invoice_date' => now(),
+                'total_amount' => $totalAmount,
+                'status' => 'open',
+            ]);
+
+            // Create invoice lines from contract lines
+            foreach ($contract->lines as $contractLine) {
+                InvoiceLine::create([
+                    'invoice_id' => $invoice->id,
+                    'product_id' => $contractLine->product_id,
+                    'amount' => $contractLine->amount,
+                    'price_snapshot' => $contractLine->price_snapshot,
+                    'delivery_status' => 'not_delivered',
+                ]);
+            }
+
+            session()->flash('success', 'Factuur ' . $invoice->invoice_number . ' aangemaakt vanuit contract!');
+            return redirect()->route('finance.invoices.show', $invoice);
+        } catch (\Exception $e) {
+            session()->flash('error', 'Fout bij genereren factuur: ' . $e->getMessage());
+        }
     }
 
     public function resetForm()

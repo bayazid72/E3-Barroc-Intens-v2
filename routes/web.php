@@ -153,7 +153,8 @@ Route::middleware(['auth', 'can:access-finance'])
     ->name('finance.')
     ->group(function () {
         Route::get('/contracten', ContractManager::class)->name('contracts');
-        Route::get('/facturen', InvoiceManager::class)->name('invoices');
+        Route::get('/facturen', \App\Livewire\Finance\InvoiceList::class)->name('invoices');
+        Route::get('/facturen/nieuw', \App\Livewire\Finance\InvoiceCreate::class)->name('invoices.create');
         Route::get('/facturen/{invoice}', \App\Livewire\Finance\InvoiceShow::class)->name('invoices.show');
         
         // Quote routes
