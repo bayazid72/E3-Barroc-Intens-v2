@@ -21,6 +21,10 @@ class UserManagement extends Component
 
     public $userIdBeingEdited = null;
     public $confirmingUserDeletion = null;
+    public $searchInput = '';
+    public $roleFilterInput = '';
+    public $search = '';
+    public $roleFilter = '';
 
     protected $rules = [
         'name'     => 'required|string|max:255',
@@ -33,7 +37,7 @@ class UserManagement extends Component
 
     public function mount()
     {
-        
+
     }
 
     public function updating()
@@ -135,8 +139,35 @@ class UserManagement extends Component
     public function render()
     {
         return view('livewire.user-management', [
-            'users' => User::with('role')->orderBy('name')->paginate(10),
+            'users' => User::with('role')
+            ->when($this->search, function ($q) {
+                $q->where(function ($sub) {
+                    $sub->where('name', 'like', "%{$this->search}%")
+                        ->orWhere('email', 'like', "%{$this->search}%");
+                });
+            })
+            ->when($this->roleFilter, function ($q) {
+                $q->where('role_id', $this->roleFilter);
+            })
+            ->orderBy('name')
+            ->paginate(10),
+
             'roles' => Role::all(),
         ]);
     }
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->roleFilter = '';
+        $this->resetPage();
+    }
+    public function applyFilters()
+    {
+        $this->search = $this->searchInput;
+        $this->roleFilter = $this->roleFilterInput;
+
+        $this->resetPage();
+    }
+
+
 }
