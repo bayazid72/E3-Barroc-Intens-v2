@@ -150,7 +150,7 @@ Route::middleware(['auth', 'can:purchase-access'])
         Route::get('/products', ProductManager::class)->name('products');
         Route::get('/stock', StockManager::class)->name('stock');
         Route::get('/suppliers', SupplierManager::class)->name('suppliers');
-        
+
         // Paid invoices management
         Route::get('/paid-invoices', \App\Livewire\Purchase\PaidInvoicesManager::class)->name('paid-invoices.index');
         Route::get('/paid-invoices/{invoice}', \App\Livewire\Purchase\PaidInvoiceDetail::class)->name('paid-invoices.show');
@@ -166,7 +166,7 @@ Route::middleware(['auth', 'can:access-inkoop'])
         Route::get('/producten', ProductManager::class)->name('products');
         Route::get('/voorraad', StockManager::class)->name('stock');
         Route::get('/leveranciers', SupplierManager::class)->name('suppliers');
-        
+
         // Paid invoices management (Dutch)
         Route::get('/betaalde-facturen', \App\Livewire\Purchase\PaidInvoicesManager::class)->name('paid-invoices.index');
         Route::get('/betaalde-facturen/{invoice}', \App\Livewire\Purchase\PaidInvoiceDetail::class)->name('paid-invoices.show');
@@ -187,7 +187,7 @@ Route::middleware(['auth', 'can:access-finance'])
         Route::get('/facturen', \App\Livewire\Finance\InvoiceList::class)->name('invoices');
         Route::get('/facturen/nieuw', \App\Livewire\Finance\InvoiceCreate::class)->name('invoices.create');
         Route::get('/facturen/{invoice}', \App\Livewire\Finance\InvoiceShow::class)->name('invoices.show');
-        
+
         // Quote routes
         Route::get('/offertes', \App\Livewire\Finance\QuoteList::class)->name('quotes.index');
         Route::get('/offertes/{quote}', \App\Livewire\Finance\QuoteShow::class)->name('quotes.show');
@@ -249,3 +249,7 @@ Route::middleware(['auth', 'can:access-maintenance'])
             ->middleware('can:maintenance-manager')
             ->name('notifications');
 });
+//forgot-password
+Volt::route('/forgot-password', 'auth.forgot-password')->name('password.request');
+Volt::route('/reset-password/{token}', 'auth.reset-password')->name('password.reset');
+
