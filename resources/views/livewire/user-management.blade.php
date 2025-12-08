@@ -180,3 +180,13 @@
         </div>
     @endif
 </div>
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('scrollToTop', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>

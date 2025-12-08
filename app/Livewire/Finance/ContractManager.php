@@ -116,16 +116,18 @@ class ContractManager extends Component
         $this->invoice_type = $contract->invoice_type;
         $this->periodic_interval_months = $contract->periodic_interval_months;
 
-        // regels laden
         $this->rulesData = [];
         foreach ($contract->lines as $line) {
             $this->rulesData[] = [
-                'product_id' => $line->product_id,
-                'quantity' => $line->amount,
-                'beans_per_month' => $line->beans_per_month,
+                'product_id'       => $line->product_id,
+                'quantity'         => $line->amount,
+                'beans_per_month'  => $line->beans_per_month,
             ];
         }
+
+        $this->dispatch('scrollToTop');
     }
+
 
     public function deleteContract($id)
     {
