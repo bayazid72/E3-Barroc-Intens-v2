@@ -30,7 +30,7 @@
         @can('manage-users')
             <a href="{{ route('users.index') }}"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">👤 Gebruikersbeheer</div>
+                <div class="font-semibold text-lg"> Gebruikersbeheer</div>
             </a>
         @endcan
 
@@ -39,7 +39,7 @@
         @if(in_array(auth()->user()->role?->name, ['Sales','Manager']))
             <a href="/sales"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">📄 Offertes</div>
+                <div class="font-semibold text-lg"> Offertes</div>
             </a>
         @endif--}}
 
@@ -48,7 +48,7 @@
         @if(in_array(auth()->user()->role?->name, ['Finance','Manager']))
             <a href="/finance/facturen"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">💶 Facturen</div>
+                <div class="font-semibold text-lg"> Facturen</div>
             </a>
         @endif
 
@@ -57,7 +57,7 @@
         @if(in_array(auth()->user()->role?->name, ['Inkoop','Manager']))
             <a href="/purchase"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">📦 Voorraad & Inkoop</div>
+                <div class="font-semibold text-lg"> Voorraad & Inkoop</div>
             </a>
         @endif
 
@@ -68,17 +68,17 @@
             @can('maintenance-tech')
                 <a href="{{ route('maintenance.dashboard') }}"
                 class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
-                    <div class="font-semibold text-lg">🛠️ Dashboard</div>
+                    <div class="font-semibold text-lg"> Dashboard</div>
                 </a>
 
                 <a href="{{ route('maintenance.planning') }}"
                 class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
-                    <div class="font-semibold text-lg">📅 Planning</div>
+                    <div class="font-semibold text-lg"> Planning</div>
                 </a>
 
                 <a href="{{ route('maintenance.workorders') }}"
                 class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
-                    <div class="font-semibold text-lg">📘 Werkbonnen</div>
+                    <div class="font-semibold text-lg"> Werkbonnen</div>
                 </a>
             @endcan
 
@@ -87,7 +87,7 @@
             @can('maintenance-manager')
                 <a href="{{ route('maintenance.dashboard.manager') }}"
                 class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
-                    <div class="font-semibold text-lg">📊 Maintenance</div>
+                    <div class="font-semibold text-lg"> Maintenance</div>
                 </a>
             @endcan
         @endcan
@@ -96,7 +96,7 @@
         @if(in_array(auth()->user()->role?->name, ['Finance','Manager']))
             <a href="/finance/contracten"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">📑 Contracten</div>
+                <div class="font-semibold text-lg"> Contracten</div>
             </a>
         @endif
 
@@ -110,7 +110,7 @@
         @if($user && in_array($user->role?->name, ['Admin', 'Manager']))
             <a href="{{ route('admin.login-logs') }}"
             class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">📋 Login Logs</div>
+                <div class="font-semibold text-lg"> Login Logs</div>
             </a>
         @endif
 

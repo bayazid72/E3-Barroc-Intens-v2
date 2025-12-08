@@ -16,7 +16,7 @@
     <button
         wire:click="startCreate"
         class="mb-4 px-4 py-2 bg-yellow-500 text-white rounded">
-        ➕ Nieuwe factuur
+         Nieuwe factuur
     </button>
 
     @if ($creating)
