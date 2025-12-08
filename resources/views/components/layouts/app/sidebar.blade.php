@@ -30,7 +30,7 @@
         @can('manage-users')
             <a href="{{ route('users.index') }}"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">👤 Gebruikersbeheer</div>
+                <div class="font-semibold text-lg"> Gebruikersbeheer</div>
             </a>
         @endcan
 
@@ -39,7 +39,7 @@
         @if(in_array(auth()->user()->role?->name, ['Sales','Manager']))
             <a href="/sales"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">📄 Offertes</div>
+                <div class="font-semibold text-lg"> Offertes</div>
             </a>
         @endif--}}
 
@@ -48,7 +48,7 @@
         @if(in_array(auth()->user()->role?->name, ['Finance','Manager']))
             <a href="/finance/facturen"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">💶 Facturen</div>
+                <div class="font-semibold text-lg"> Facturen</div>
             </a>
         @endif
 
@@ -57,14 +57,14 @@
         @if(in_array(auth()->user()->role?->name, ['Inkoop','Manager']))
             <a href="/purchase"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">📦 Voorraad & Inkoop</div>
+                <div class="font-semibold text-lg"> Voorraad & Inkoop</div>
             </a>
         @endif
 
         @if(in_array(auth()->user()->role?->name, ['maintenance']))
             <a href="/maintenance"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">📦 Voorraad & Inkoop</div>
+                <div class="font-semibold text-lg"> Voorraad & Inkoop</div>
             </a>
         @endif
 
@@ -76,7 +76,7 @@
             @can('maintenance-manager','maintenance')
                 <a href="{{ route('maintenance.dashboard.manager') }}"
                 class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
-                    <div class="font-semibold text-lg">🛠️ Maintenance</div>
+                    <div class="font-semibold text-lg"> Maintenance</div>
                 </a>
         @endcan
 
@@ -100,14 +100,14 @@
         @if(in_array(auth()->user()->role?->name, ['Finance','Manager']))
             <a href="/finance/contracten"
                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg">📑 Contracten</div>
+                <div class="font-semibold text-lg"> Contracten</div>
             </a>
         @endif
 
     </flux:navlist>
         <a href="{{ route('admin.login-logs') }}"
         class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-            <div class="font-semibold text-lg">📋 Login Logs</div>
+            <div class="font-semibold text-lg"> Login Logs</div>
         </a>
 
     

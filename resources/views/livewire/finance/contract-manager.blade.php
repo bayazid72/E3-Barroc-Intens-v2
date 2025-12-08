@@ -155,7 +155,7 @@
     <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
 
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white">📑 Alle contracten</h2>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white"> Alle contracten</h2>
         </div>
 
         <div class="overflow-x-auto">
@@ -179,11 +179,11 @@
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($contract->invoice_type === 'monthly')
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                                    📅 Maandelijks
+                                     Maandelijks
                                 </span>
                             @else
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
-                                    🔄 Periodiek ({{ $contract->periodic_interval_months }}m)
+                                     Periodiek ({{ $contract->periodic_interval_months }}m)
                                 </span>
                             @endif
                         </td>
