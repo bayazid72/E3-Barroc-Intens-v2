@@ -11,11 +11,12 @@
                 wire:model.live="selectedDate"
                 class="border rounded px-2 py-1"
             >
-
-            <a href="{{ route('maintenance.create') }}"
-            class="px-3 py-2 bg-yellow-500 text-white rounded text-sm">
-                ➕ Nieuwe afspraak maken
-            </a>
+            @can('maintenance-manager')
+                <a href="{{ route('maintenance.create') }}"
+                class="px-3 py-2 bg-yellow-500 text-white rounded text-sm">
+                    ➕ Nieuwe afspraak maken
+                </a>
+            @endcan
         </div>
     </div>
 
