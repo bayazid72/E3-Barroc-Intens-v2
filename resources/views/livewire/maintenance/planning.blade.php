@@ -61,13 +61,39 @@
         const calendarEl = document.getElementById('calendar');
         if (!calendarEl) return;
 
-        // voorkom dubbele initialisatie
         if (calendarEl.dataset.fcInitialized === '1') return;
         calendarEl.dataset.fcInitialized = '1';
 
-        // We zitten hier in een Livewire view, dus @this is geldig
         const calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
+
+            // knoppen voor verschillende type calender
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+
+            // nederlandse labels
+            buttonText: {
+                today: 'Vandaag',
+                month: 'Maand',
+                week: 'Week (tijdlijn)',
+                day: 'Dag',
+                list: 'Lijst'
+            },
+
+            // tijlijnen
+            views: {
+                timeGridWeek: {
+                    slotMinTime: '08:00:00',
+                    slotMaxTime: '18:00:00',
+                },
+                timeGridDay: {
+                    slotMinTime: '08:00:00',
+                    slotMaxTime: '18:00:00',
+                }
+            },
 
             events(fetchInfo, successCallback, failureCallback) {
                 @this.call('getEvents')
@@ -86,10 +112,7 @@
         calendar.render();
     }
 
-    // Livewire 3 events
     document.addEventListener('livewire:initialized', initPlanningCalendar);
     document.addEventListener('livewire:navigated', initPlanningCalendar);
 </script>
-
-
 </div>
