@@ -20,6 +20,12 @@ class ContractManager extends Component
     public $editingContractId = null;
 
     public $rulesData = [];
+    public $searchInput = '';
+    public $modelFilterInput = '';
+
+    public $search = '';
+    public $modelFilter = '';
+
 
     public function mount()
     {
@@ -191,9 +197,35 @@ class ContractManager extends Component
     public function render()
     {
         return view('livewire.finance.contract-manager', [
-            'contracts' => Contract::with('company')->orderBy('created_at', 'desc')->get(),
+        'contracts' => Contract::with('company')
+            ->when($this->search, function ($q) {
+                $q->whereHas('company', function ($sub) {
+                    $sub->where('name', 'like', "%{$this->search}%");
+                });
+            })
+            ->when($this->modelFilter, function ($q) {
+                $q->where('invoice_type', $this->modelFilter);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get(),
             'companies' => Company::all(),
             'products' => Product::all(),
         ]);
     }
+
+    public function applyFilters()
+    {
+        $this->search = $this->searchInput;
+        $this->modelFilter = $this->modelFilterInput;
+    }
+
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->modelFilter = '';
+
+        $this->searchInput = '';
+        $this->modelFilterInput = '';
+    }
+
 }

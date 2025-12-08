@@ -30,6 +30,8 @@
         </div>
     @endif
 
+
+
     {{-- FORM --}}
     <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 p-6">
 
@@ -150,6 +152,35 @@
 
         </form>
     </div>
+
+    <!-- FILTERBALK -->
+
+
+    <div class="p-6 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex flex-col md:flex-row gap-3">
+
+        <input type="text"
+            wire:model.defer="searchInput"
+            placeholder="Zoek op klantnaam..."
+            class="w-full md:w-1/3 border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+
+        <select wire:model.defer="modelFilterInput"
+                class="w-full md:w-1/3 border rounded px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+            <option value="">Alle facturatiemodellen</option>
+            <option value="monthly">Maandelijks</option>
+            <option value="periodic">Periodiek</option>
+        </select>
+
+        <button wire:click="applyFilters"
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Filter toepassen
+        </button>
+
+        <button wire:click="resetFilters"
+                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
+            Reset
+        </button>
+    </div>
+
 
     {{-- Tabel --}}
     <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
