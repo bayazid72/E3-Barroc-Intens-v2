@@ -86,7 +86,9 @@ class UserManagement extends Component
 
         $this->password = '';
         $this->password_confirmation = '';
+        $this->dispatch('scrollToTop');
     }
+
 
     public function updateUser()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Invoice;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -14,12 +15,14 @@ class InvoicePaid
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public Invoice $invoice;
+
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(Invoice $invoice)
     {
-        //
+        $this->invoice = $invoice;
     }
 
     /**
@@ -30,7 +33,7 @@ class InvoicePaid
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new PrivateChannel('invoice-paid'),
         ];
     }
 }

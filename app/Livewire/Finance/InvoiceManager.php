@@ -40,21 +40,11 @@ class InvoiceManager extends Component
 
     public function markAsPaid($id)
     {
-        $invoice = Invoice::findOrFail($id);
+        $invoice = Invoice::withoutGlobalScope('invoice')->findOrFail($id);
 
-        $wasPaid = $invoice->status === 'paid';
+        $invoice->markAsPaid();
 
-        $invoice->update([
-            'status'             => 'paid',
-            'paid_at'            => now(),
-            'procurement_status' => 'pending',
-        ]);
-
-        if (! $wasPaid) {
-            InvoicePaid::dispatch($invoice->fresh('company', 'invoiceLines.product'));
-        }
-
-        session()->flash('success', 'Factuur gemarkeerd als betaald!');
+        session()->flash('success', 'Factuur gemarkeerd als betaald! Inkoop is genotificeerd.');
     }
 
 
