@@ -5,6 +5,8 @@ namespace App\Livewire\Finance;
 use App\Models\Invoice;
 use App\Models\Company;
 use Livewire\Component;
+use App\Events\InvoicePaid;
+
 
 class InvoiceManager extends Component
 {
@@ -40,12 +42,21 @@ class InvoiceManager extends Component
     {
         $invoice = Invoice::findOrFail($id);
 
+        $wasPaid = $invoice->status === 'paid';
+
         $invoice->update([
-            'status' => 'paid',
+            'status'             => 'paid',
+            'paid_at'            => now(),
+            'procurement_status' => 'pending',
         ]);
+
+        if (! $wasPaid) {
+            InvoicePaid::dispatch($invoice->fresh('company', 'invoiceLines.product'));
+        }
 
         session()->flash('success', 'Factuur gemarkeerd als betaald!');
     }
+
 
 
     public function createInvoice()
@@ -93,26 +104,41 @@ class InvoiceManager extends Component
     public function updateInvoice()
     {
         $this->validate([
-            'company_id' => 'required|exists:companies,id',
+            'company_id'   => 'required|exists:companies,id',
             'invoice_date' => 'required|date',
             'total_amount' => 'required|numeric|min:0',
-            'status' => 'required|in:open,paid,overdue',
-
+            'status'       => 'required|in:open,paid,overdue',
         ]);
 
         $invoice = Invoice::findOrFail($this->editingInvoiceId);
 
-        $invoice->update([
-            'company_id' => $this->company_id,
+        $oldStatus = $invoice->status;
+
+        $data = [
+            'company_id'   => $this->company_id,
             'invoice_date' => $this->invoice_date,
             'total_amount' => $this->total_amount,
             'status'       => $this->status,
-        ]);
+        ];
+
+        // als status naar betaald gaat → paid_at + inkoop pending
+        if ($oldStatus !== 'paid' && $this->status === 'paid') {
+            $data['paid_at']            = now();
+            $data['procurement_status'] = 'pending';
+        }
+
+        $invoice->update($data);
+
+        // event als hij nu betaald is geworden
+        if ($oldStatus !== 'paid' && $this->status === 'paid') {
+            InvoicePaid::dispatch($invoice->fresh('company', 'lines.product'));
+        }
 
         $this->reset(['editing','editingInvoiceId','company_id','invoice_date','total_amount']);
 
         session()->flash('success', 'Factuur succesvol bijgewerkt!');
     }
+
 
 
     public function render()

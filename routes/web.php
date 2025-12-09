@@ -29,6 +29,10 @@ use App\Livewire\Maintenance\WorkOrderForm;
 use App\Livewire\Maintenance\MaintenanceDashboard;
 use App\Models\LoginAttempt;
 use App\Livewire\Maintenance\ViewAppointment;
+use App\Livewire\Purchase\InvoiceTasks;
+use Illuminate\Http\Request;
+use App\Models\Invoice;
+
 
 use Illuminate\Support\Facades\Auth;
 
@@ -151,6 +155,19 @@ Route::middleware(['auth', 'can:purchase-access'])
         Route::get('/products', ProductManager::class)->name('products');
         Route::get('/stock', StockManager::class)->name('stock');
         Route::get('/suppliers', SupplierManager::class)->name('suppliers');
+
+        // 👇 DIT ERBIJ
+        Route::post('/invoices/{invoice}/status', function (Request $request, Invoice $invoice) {
+            $data = $request->validate([
+                'procurement_status' => 'required|in:pending,ordered,delivered,completed',
+            ]);
+
+            $invoice->update([
+                'procurement_status' => $data['procurement_status'],
+            ]);
+
+            return back()->with('success', 'Inkoopstatus bijgewerkt.');
+        })->name('invoices.update-status');
     });
 
 
