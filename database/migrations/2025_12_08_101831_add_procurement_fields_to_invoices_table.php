@@ -18,8 +18,6 @@ public function up(): void
 
         $table->boolean('stock_processed')->default(false);
 
-        $table->string('payment_method')->nullable();
-        $table->string('payment_reference')->nullable();
     });
 }
 

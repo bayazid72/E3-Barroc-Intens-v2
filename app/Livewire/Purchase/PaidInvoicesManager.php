@@ -3,54 +3,37 @@
 namespace App\Livewire\Purchase;
 
 use App\Models\Invoice;
-use App\Models\InvoiceLine;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class PaidInvoicesManager extends Component
 {
-    use WithPagination;
-
     public $search = '';
-    public $actionFilter = 'all';
-
-    protected $queryString = [
-        'search' => ['except' => ''],
-        'actionFilter' => ['except' => 'all'],
-    ];
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingActionFilter()
-    {
-        $this->resetPage();
-    }
 
     public function render()
     {
-        $paidInvoices = Invoice::with(['company', 'lines.product'])
+        $query = Invoice::with(['company', 'invoiceLines.product'])
             ->where('status', 'paid')
-            ->when($this->search, function ($query) {
-                $query->whereHas('company', function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%');
-                })->orWhere('invoice_number', 'like', '%' . $this->search . '%');
-            })
-            ->orderBy('paid_at', 'desc')
-            ->paginate(15);
+            ->orderBy('paid_at', 'desc');
 
-        $backorderLines = InvoiceLine::with(['invoice.company', 'product'])
-            ->whereHas('invoice', function ($query) {
-                $query->where('status', 'paid');
-            })
-            ->where('delivery_status', 'not_delivered')
-            ->get();
+        if ($this->search) {
+            $s = '%' . $this->search . '%';
 
-        return view('livewire.purchase.paid-invoices-manager', [
-            'paidInvoices' => $paidInvoices,
-            'backorderLines' => $backorderLines,
-        ]);
+            $query->where(function ($q) use ($s) {
+                $q->where('invoice_number', 'like', $s)
+                  ->orWhereHas('company', function ($qc) use ($s) {
+                      $qc->where('name', 'like', $s);
+                  });
+            });
+        }
+
+        $paidInvoices = $query->paginate(15);
+
+        $backorderLines = $paidInvoices
+        ->getCollection()              // haal de items uit paginator
+        ->flatMap->invoiceLines        // flatten alle invoice lines
+        ->filter->isBackorder();       // alleen not_delivered + invoice->isPaid()
+
+
+        return view('livewire.purchase.paid-invoices-manager', compact('paidInvoices', 'backorderLines'));
     }
 }

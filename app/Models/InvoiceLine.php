@@ -81,7 +81,8 @@ class InvoiceLine extends Model
      */
     public function isBackorder(): bool
     {
-        return $this->delivery_status === 'not_delivered' && 
-               $this->invoice->isPaid();
+        return $this->delivery_status === 'not_delivered'
+            && $this->invoice->isPaid();
     }
+
 }

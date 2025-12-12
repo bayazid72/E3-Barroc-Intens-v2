@@ -13,6 +13,9 @@ use App\Livewire\Purchase\PurchaseDashboard;
 use App\Livewire\Purchase\ProductManager;
 use App\Livewire\Purchase\StockManager;
 use App\Livewire\Purchase\SupplierManager;
+use App\Livewire\Purchase\PaidInvoicesManager;
+use App\Livewire\Purchase\ProductOverview;
+
 
 use App\Livewire\Finance\FinanceDashboard;
 use App\Livewire\Finance\ContractManager;
@@ -54,9 +57,18 @@ Route::get('/contact', fn() => view('contact'))->name('contact');
 |--------------------------------------------------------------------------
 */
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/dashboard', function () {
+    $role = auth()->user()->role?->name;
+
+    return match ($role) {
+        'Manager'              => redirect()->route('users.index'),          
+        'Inkoop'               => redirect()->route('purchase.dashboard'),
+        'Finance'              => redirect()->route('finance.contracts'),
+        'MaintenanceManager'   => redirect()->route('maintenance.dashboard.manager'),
+        'Maintenance'          => redirect()->route('maintenance.dashboard'),
+        default                => view('dashboard'),
+    };
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 
 /*
@@ -150,32 +162,24 @@ Route::middleware(['auth', 'can:purchase-access'])
     ->prefix('purchase')
     ->name('purchase.')
     ->group(function () {
+
+        // Dashboard & beheer
         Route::get('/', PurchaseDashboard::class)->name('dashboard');
         Route::get('/products', ProductManager::class)->name('products');
         Route::get('/stock', StockManager::class)->name('stock');
         Route::get('/suppliers', SupplierManager::class)->name('suppliers');
 
-        // Paid invoices management
-        Route::get('/paid-invoices', \App\Livewire\Purchase\PaidInvoicesManager::class)->name('paid-invoices.index');
-        Route::get('/paid-invoices/{invoice}', \App\Livewire\Purchase\PaidInvoiceDetail::class)->name('paid-invoices.show');
+        // Overzichten
+        Route::get('/products/overview', ProductOverview::class)
+            ->name('products.overview');
+
+        // Paid invoices
+        Route::get('/paid-invoices', PaidInvoicesManager::class)
+            ->name('paid-invoices');
     });
-
-
-// Alternatieve Nederlandse routes (inkoop)
-Route::middleware(['auth', 'can:access-inkoop'])
-    ->prefix('inkoop')
-    ->name('purchase.')
-    ->group(function () {
-        Route::get('/', PurchaseDashboard::class)->name('dashboard');
-        Route::get('/producten', ProductManager::class)->name('products');
-        Route::get('/voorraad', StockManager::class)->name('stock');
-        Route::get('/leveranciers', SupplierManager::class)->name('suppliers');
-
-        // Paid invoices management (Dutch)
-        Route::get('/betaalde-facturen', \App\Livewire\Purchase\PaidInvoicesManager::class)->name('paid-invoices.index');
-        Route::get('/betaalde-facturen/{invoice}', \App\Livewire\Purchase\PaidInvoiceDetail::class)->name('paid-invoices.show');
-    });
-
+Route::middleware(['auth'])
+    ->get('/products', ProductOverview::class)
+    ->name('products.overview');
 
 /*
 |--------------------------------------------------------------------------
@@ -256,4 +260,6 @@ Route::middleware(['auth', 'can:access-maintenance'])
 //forgot-password
 Volt::route('/forgot-password', 'auth.forgot-password')->name('password.request');
 Volt::route('/reset-password/{token}', 'auth.reset-password')->name('password.reset');
+
+
 
