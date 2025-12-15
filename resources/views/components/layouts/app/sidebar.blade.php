@@ -82,6 +82,13 @@
                     <div class="font-semibold text-lg"> Werkbonnen</div>
                 </a>
             @endcan
+            @can('access-maintenance')
+                <a href="{{ route('maintenance.planning') }}"
+                class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500">
+                    <div class="font-semibold text-lg">Onderhoud</div>
+                </a>
+            @endcan
+
 
 
             {{-- HOOFD MAINTENANCE + MANAGER --}}

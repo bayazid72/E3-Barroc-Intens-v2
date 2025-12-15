@@ -67,6 +67,8 @@ Route::get('/dashboard', function () {
         'Finance'              => redirect()->route('finance.contracts'),
         'MaintenanceManager'   => redirect()->route('maintenance.dashboard.manager'),
         'Maintenance'          => redirect()->route('maintenance.dashboard'),
+        'Sales'                => redirect()->route('sales.dashboard'),
+
         default                => view('dashboard'),
     };
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -384,3 +386,47 @@ Route::middleware(['auth', 'can:sales-access'])
             ->name('index');
     });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*Strakes aanpassen en de dubbele verwijderen.*/
+
+    Route::middleware(['auth', 'can:access-maintenance'])
+    ->prefix('maintenance')
+    ->name('maintenance.')
+    ->group(function () {
+
+        Route::get('/', MaintenanceDashboard::class)
+            ->name('dashboard');
+
+        Route::get('/planning', Planning::class)
+            ->middleware('can:maintenance-appointments')
+            ->name('planning');
+
+        Route::get('/view/{appointment}', ViewAppointment::class)
+            ->middleware('can:maintenance-appointments')
+            ->name('view');
+
+        Route::get('/afspraak/nieuw', CreateAppointment::class)
+            ->middleware('can:maintenance-appointments')
+            ->name('create');
+
+        // alleen manager
+        Route::get('/manager', DashboardManager::class)
+            ->middleware('can:maintenance-manager')
+            ->name('dashboard.manager');
+    });

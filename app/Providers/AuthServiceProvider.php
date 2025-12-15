@@ -14,7 +14,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manage-users', function (User $user) {
             return in_array($user->role?->name, [
                 'Manager',
-                'Sales',
             ]);
         });
 
@@ -31,7 +30,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // MAINTENANCE MANAGER (alleen hoofd maintenance + manager)
         Gate::define('maintenance-manager', function ($user) {
-            return in_array($user->role->name, ['MaintenanceManager', 'Manager', 'Sales', ]);
+            return in_array($user->role->name, ['MaintenanceManager', 'Manager', ]);
         });
 
         // is admin (voor login logs)
