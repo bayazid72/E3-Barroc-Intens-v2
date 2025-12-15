@@ -27,15 +27,28 @@
                         <td>{{ ucfirst($a->type) }}</td>
                         <td>{{ ucfirst($a->status) }}</td>
                         <td class="text-right space-x-2">
+                           <td class="text-right space-x-2">
+
                             <a href="{{ route('maintenance.view', $a->id) }}"
-                               class="text-xs px-3 py-1 bg-blue-500 text-white rounded">
+                            class="text-xs px-3 py-1 bg-blue-500 text-white rounded">
                                 Details
                             </a>
 
                             <a href="{{ route('maintenance.workorder.form', $a->id) }}"
-                               class="text-xs px-3 py-1 bg-yellow-500 text-white rounded">
+                            class="text-xs px-3 py-1 bg-yellow-500 text-white rounded">
                                 Werkbon
                             </a>
+
+                            {{-- 🤒 Ziek melden: alleen eigen geplande afspraak --}}
+                            @if($a->technician_id === auth()->id() && $a->status === 'planned')
+                                <button wire:click="markSick({{ $a->id }})"
+                                        class="text-xs px-3 py-1 bg-red-600 text-white rounded">
+                                    Ziek melden
+                                </button>
+                            @endif
+
+                        </td>
+
                         </td>
                     </tr>
                 @empty
