@@ -35,13 +35,14 @@
         @endcan
 
 
-        {{-- 2. OFFERTES
-        @if(in_array(auth()->user()->role?->name, ['Sales','Manager']))
-            <a href="/sales"
-               class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-3">
-                <div class="font-semibold text-lg"> Offertes</div>
+        {{-- 2. SALES --}}
+        @can('sales-access')
+            <a href="{{ route('sales.dashboard') }}"
+            class="flex items-center gap-3 p-3 rounded-lg border border-neutral-300 hover:border-yellow-500 transition mb-2">
+                <div class="font-semibold text-lg"> Sales</div>
             </a>
-        @endif--}}
+        @endcan
+
 
 
         {{-- 3. FACTUREN --}}

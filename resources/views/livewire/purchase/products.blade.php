@@ -203,12 +203,16 @@
                         </button>
 
                         <button
-                            onclick="confirm('Weet je zeker dat je dit product wilt verwijderen?') || event.stopImmediatePropagation()"
-                            wire:click="deleteProduct({{ $product->id }})"
+                            type="button"
+                            onclick="if (confirm('Weet je zeker dat je dit product wilt verwijderen?')) {
+                                @this.call('deleteProduct', {{ $product->id }})
+                            }"
                             class="px-3 py-1 text-xs bg-red-500 text-white rounded"
                         >
                             Verwijderen
                         </button>
+
+
 
 
                     </td>

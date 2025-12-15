@@ -23,12 +23,12 @@
     </p>
 
     @can('maintenance-manager')
-    <div class="mt-6">
-        <a href="{{ route('maintenance.edit', $appointment->id) }}"
-        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            ✏️ Afspraak bewerken
-        </a>
-    </div>
+        <div class="mt-6">
+            <a href="{{ route('maintenance.edit', $appointment->id) }}"
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                ✏️ Afspraak bewerken
+            </a>
+        </div>
     @endcan
 
 </div>

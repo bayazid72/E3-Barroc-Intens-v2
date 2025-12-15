@@ -4,7 +4,8 @@
 
     <div class="mb-4">
         <label class="block mb-1 font-semibold">Datum</label>
-        <input type="date" wire:model.live="selectedDate" class="border rounded px-2 py-1" />
+        <input type="date" wire:model.live="selectedDate"
+               class="border rounded px-2 py-1">
     </div>
 
     <div class="bg-white shadow rounded p-4">
@@ -21,11 +22,16 @@
             <tbody>
                 @forelse($appointments as $a)
                     <tr class="border-b">
-                        <td>{{ $a->date_planned?->format('H:i') ?? '-' }}</td>
+                        <td>{{ $a->date_planned?->format('H:i') }}</td>
                         <td>{{ $a->company->name }}</td>
                         <td>{{ ucfirst($a->type) }}</td>
                         <td>{{ ucfirst($a->status) }}</td>
-                        <td class="text-right">
+                        <td class="text-right space-x-2">
+                            <a href="{{ route('maintenance.view', $a->id) }}"
+                               class="text-xs px-3 py-1 bg-blue-500 text-white rounded">
+                                Details
+                            </a>
+
                             <a href="{{ route('maintenance.workorder.form', $a->id) }}"
                                class="text-xs px-3 py-1 bg-yellow-500 text-white rounded">
                                 Werkbon
@@ -33,10 +39,11 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="text-center py-3">Geen bezoeken</td></tr>
+                    <tr>
+                        <td colspan="5" class="text-center py-3">Geen bezoeken</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-
 </div>

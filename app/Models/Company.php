@@ -16,6 +16,10 @@ class Company extends Model
     {
         return $this->belongsTo(User::class, 'contact_id');
     }
+    public function mount()
+    {
+        $this->companies = Company::orderBy('name')->get();
+    }
 
     public function notes()
     {

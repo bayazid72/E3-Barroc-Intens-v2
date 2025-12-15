@@ -144,13 +144,19 @@ class ProductManager extends Component
             'categories' => ProductCategory::all(),
         ]);
     }
-
     public function deleteProduct($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::withCount('inventoryMovements')->findOrFail($id);
 
-        $product->delete();
+        if ($product->inventory_movements_count > 0) {
+            session()->flash(
+                'error',
+                'Dit product is al gebruikt/besteld en kan niet worden verwijderd.'
+            );
+            return;
+        }
 
+        $product->delete(); // soft delete
         session()->flash('success', 'Product verwijderd.');
     }
 
