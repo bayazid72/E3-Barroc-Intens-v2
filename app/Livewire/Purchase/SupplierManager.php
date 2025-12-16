@@ -9,16 +9,9 @@ class SupplierManager extends Component
 {
     public function getSuppliersProperty()
     {
-        return Product::select('description')
-            ->whereNotNull('description')
-            ->pluck('description')
-            ->map(function ($desc) {
-                if (preg_match('/Supplier:\s*(.+)/i', $desc, $m)) {
-                    return trim($m[1]);
-                }
-                return null;
-            })
-            ->filter()
+        return Product::whereNotNull('supplier')
+            ->where('supplier', '!=', '')
+            ->pluck('supplier')
             ->unique()
             ->values();
     }
@@ -27,7 +20,7 @@ class SupplierManager extends Component
     {
         return view('livewire.purchase.suppliers', [
             'suppliers' => $this->suppliers,
-            'products' => Product::all(),
+            'products'  => Product::all(),
         ]);
     }
 }

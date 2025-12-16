@@ -1,159 +1,95 @@
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center">
-        <flux:heading size="xl">Betaalde Facturen - Actie Vereist</flux:heading>
-        <flux:badge color="blue" size="lg">
-            {{ $backorderLines->count() }} producten wachten op levering
-        </flux:badge>
-    </div>
+<div class="max-w-6xl mx-auto py-8 space-y-6">
 
-    <!-- Filters -->
-    <div class="flex gap-4">
-        <flux:input 
-            wire:model.live.debounce.300ms="search" 
+    <h1 class="text-2xl font-bold">Betaalde Facturen - Leveringsoverzicht</h1>
+
+    <div>
+        <input
+            type="text"
+            wire:model.debounce.300ms="search"
             placeholder="Zoek op klant of factuurnummer..."
-            icon="magnifying-glass"
-            class="flex-1"
-        />
+            class="border rounded px-3 py-2 w-full"
+        >
     </div>
 
-    <!-- Backorder Alert -->
-    @if($backorderLines->count() > 0)
-        <flux:card class="bg-red-50 dark:bg-red-900/20">
-            <flux:card.header>
-                <div class="flex items-center gap-3">
-                    <flux:icon.exclamation-triangle class="size-6 text-red-600 dark:text-red-400" />
-                    <flux:heading size="lg" class="text-red-800 dark:text-red-300">
-                        Producten wachten op bestelling/levering
-                    </flux:heading>
-                </div>
-            </flux:card.header>
-            <flux:card.body>
-                <flux:table>
-                    <flux:columns>
-                        <flux:column>Factuur</flux:column>
-                        <flux:column>Klant</flux:column>
-                        <flux:column>Product</flux:column>
-                        <flux:column>Aantal</flux:column>
-                        <flux:column>Betaald op</flux:column>
-                        <flux:column>Actie</flux:column>
-                    </flux:columns>
+    {{-- Backorders --}}
+    @if ($backorderLines->count() > 0)
+        <div class="p-4 bg-red-50 border border-red-200 rounded">
+            <h2 class="font-semibold text-red-700 mb-2">
+                Producten wachten op levering
+            </h2>
 
-                    <flux:rows>
-                        @foreach($backorderLines as $line)
-                            <flux:row wire:key="backorder-{{ $line->id }}">
-                                <flux:cell>
-                                    <span class="font-mono text-sm">{{ $line->invoice->invoice_number }}</span>
-                                </flux:cell>
-                                <flux:cell>
-                                    {{ $line->invoice->company->name }}
-                                </flux:cell>
-                                <flux:cell>
-                                    <div class="font-medium">{{ $line->product->name }}</div>
-                                </flux:cell>
-                                <flux:cell class="font-semibold">{{ $line->amount }}x</flux:cell>
-                                <flux:cell>
-                                    {{ $line->invoice->paid_at->format('d-m-Y') }}
-                                </flux:cell>
-                                <flux:cell>
-                                    <flux:button 
-                                        size="sm" 
-                                        variant="primary"
-                                        wire:navigate
-                                        href="{{ route('purchase.paid-invoices.show', $line->invoice->id) }}"
-                                    >
-                                        Bekijk
-                                    </flux:button>
-                                </flux:cell>
-                            </flux:row>
-                        @endforeach
-                    </flux:rows>
-                </flux:table>
-            </flux:card.body>
-        </flux:card>
+            <table class="w-full text-left text-sm">
+                <thead>
+                    <tr class="border-b">
+                        <th>Factuur</th>
+                        <th>Klant</th>
+                        <th>Product</th>
+                        <th>Aantal</th>
+                        <th>Betaald op</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($backorderLines as $line)
+                        <tr class="border-b">
+                            <td>{{ $line->invoice->invoice_number }}</td>
+                            <td>{{ $line->invoice->company->name }}</td>
+                            <td>{{ $line->product->name }}</td>
+                            <td>{{ $line->amount }}</td>
+                            <td>{{ $line->invoice->paid_at->format('d-m-Y') }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     @endif
 
-    <!-- Paid Invoices List -->
-    <flux:card>
-        <flux:card.header>
-            <flux:heading size="lg">Alle Betaalde Facturen</flux:heading>
-        </flux:card.header>
-        <flux:card.body>
-            <flux:table>
-                <flux:columns>
-                    <flux:column>Factuur #</flux:column>
-                    <flux:column>Klant</flux:column>
-                    <flux:column>Bedrag</flux:column>
-                    <flux:column>Betaald op</flux:column>
-                    <flux:column>Leveringstatus</flux:column>
-                    <flux:column>Acties</flux:column>
-                </flux:columns>
+    {{-- Alle betaalde facturen --}}
+    <div class="bg-white shadow rounded p-4">
 
-                <flux:rows>
-                    @forelse($paidInvoices as $invoice)
-                        <flux:row wire:key="invoice-{{ $invoice->id }}">
-                            <flux:cell>
-                                <span class="font-mono font-medium">{{ $invoice->invoice_number }}</span>
-                            </flux:cell>
+        <h2 class="text-lg font-semibold mb-4">Alle betaalde facturen</h2>
 
-                            <flux:cell>
-                                <div class="font-medium">{{ $invoice->company->name }}</div>
-                            </flux:cell>
+        <table class="w-full text-left text-sm">
+            <thead>
+                <tr class="border-b">
+                    <th>Factuur #</th>
+                    <th>Klant</th>
+                    <th>Bedrag</th>
+                    <th>Betaald op</th>
+                    <th>Levering</th>
+                </tr>
+            </thead>
 
-                            <flux:cell class="font-semibold text-green-600">
-                                € {{ number_format($invoice->total_amount, 2, ',', '.') }}
-                            </flux:cell>
+            <tbody>
+            @foreach ($paidInvoices as $invoice)
+                @php
+                    $delivered = $invoice->invoiceLines->where('delivery_status','delivered')->count();
+                    $total = $invoice->invoiceLines->count();
+                @endphp
 
-                            <flux:cell>
-                                <div>{{ $invoice->paid_at->format('d-m-Y') }}</div>
-                                <div class="text-xs text-zinc-500">{{ $invoice->paid_at->diffForHumans() }}</div>
-                            </flux:cell>
+                <tr class="border-b">
+                    <td class="py-2">{{ $invoice->invoice_number }}</td>
+                    <td>{{ $invoice->company->name }}</td>
+                    <td>€ {{ number_format($invoice->total_amount, 2, ',', '.') }}</td>
+                    <td>{{ $invoice->paid_at->format('d-m-Y') }}</td>
+                    <td>
+                        @if($delivered === $total)
+                            <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
+                                Alles geleverd
+                            </span>
+                        @else
+                            <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-700">
+                                {{ $delivered }}/{{ $total }} geleverd
+                            </span>
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
 
-                            <flux:cell>
-                                @php
-                                    $deliveredCount = $invoice->lines->where('delivery_status', 'delivered')->count();
-                                    $totalCount = $invoice->lines->count();
-                                    $allDelivered = $deliveredCount === $totalCount;
-                                @endphp
+        <div class="mt-4">
+            {{ $paidInvoices->links() }}
+        </div>
+    </div>
 
-                                @if($allDelivered)
-                                    <flux:badge color="green" size="sm">
-                                        <flux:icon.check class="size-4" />
-                                        Alles geleverd
-                                    </flux:badge>
-                                @else
-                                    <flux:badge color="red" size="sm">
-                                        <flux:icon.exclamation-triangle class="size-4" />
-                                        {{ $deliveredCount }}/{{ $totalCount }} geleverd
-                                    </flux:badge>
-                                @endif
-                            </flux:cell>
-
-                            <flux:cell>
-                                <flux:button 
-                                    size="sm" 
-                                    variant="ghost"
-                                    wire:navigate
-                                    href="{{ route('purchase.paid-invoices.show', $invoice->id) }}"
-                                >
-                                    Details
-                                </flux:button>
-                            </flux:cell>
-                        </flux:row>
-                    @empty
-                        <flux:row>
-                            <flux:cell colspan="6" class="text-center py-8 text-zinc-500">
-                                Geen betaalde facturen gevonden
-                            </flux:cell>
-                        </flux:row>
-                    @endforelse
-                </flux:rows>
-            </flux:table>
-
-            <!-- Pagination -->
-            <div class="mt-4">
-                {{ $paidInvoices->links() }}
-            </div>
-        </flux:card.body>
-    </flux:card>
 </div>

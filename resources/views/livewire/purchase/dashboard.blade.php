@@ -15,10 +15,34 @@
             <p class="text-gray-600 mt-2">Producten toevoegen, wijzigen en categoriseren.</p>
         </a>
 
-        <a href="{{ route('purchase.stock') }}" class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition block">
+        <a href="{{ route('purchase.stock') }}"
+            class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition block">
             <h2 class="text-xl font-semibold">Voorraadbeheer</h2>
-            <p class="text-gray-600 mt-2">Voorraad aanvullen en voorraadmutaties bekijken.</p>
+            <p class="text-gray-600 mt-2">
+                Voorraad aanvullen en voorraadstatus controleren.
+            </p>
         </a>
+
+        <a href="{{ route('purchase.products.overview') }}"
+            class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition block">
+            <h2 class="text-xl font-semibold">Voorraadmutaties</h2>
+            <p class="text-gray-600 mt-2">
+                Voorraadmutaties bekijken, zoeken en filteren.
+            </p>
+        </a>
+
+
+        <a href="{{ route('purchase.suppliers') }}" class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition block">
+            <h2 class="text-xl font-semibold">Leveranciers</h2>
+            <p class="text-gray-600 mt-2">Bekijk alle producten per leverancier.</p>
+        </a>
+
+        {{--<a href="{{ route('purchase.paid-invoices') }}" class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition block">
+            <h2 class="text-xl font-semibold">Backorder & Leveringen</h2>
+            <p class="text-gray-600 mt-2">Inzicht in openstaande leveringen van betaalde facturen.</p>
+        </a>--}}
+
+
 
     </div>
 

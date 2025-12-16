@@ -12,7 +12,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         // Manager mag ALLES beheren
         Gate::define('manage-users', function (User $user) {
-            return $user->role && $user->role->name === 'Manager';
+            return in_array($user->role?->name, [
+                'Manager',
+            ]);
         });
 
         // INKOOP toegang
@@ -28,7 +30,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // MAINTENANCE MANAGER (alleen hoofd maintenance + manager)
         Gate::define('maintenance-manager', function ($user) {
-            return in_array($user->role->name, ['MaintenanceManager', 'Manager',]);
+            return in_array($user->role->name, ['MaintenanceManager', 'Manager', ]);
         });
 
         // is admin (voor login logs)
@@ -36,25 +38,33 @@ class AuthServiceProvider extends ServiceProvider
             return (bool) ($user->is_admin ?? false);
         });
 
-        Gate::define('access-maintenance', function ($user) {
-    return in_array($user->role->name, [
-        'Maintenance',          // ← monteur
-        'MaintenanceManager',
-        'Manager',
-    ]);
-});
-Gate::define('maintenance-tech', function ($user) {
-    return $user->role->name === 'Maintenance';
-});
+        // SALES toegang
+        Gate::define('sales-access', function ($user) {
+            return in_array($user->role->name, [
+                'Sales',
+                'Manager',
+            ]);
+        });
+        Gate::define('maintenance-appointments', function ($user) {
+            return in_array($user->role->name, [
+                'Sales',
+                'MaintenanceManager',
+                'Manager',
+                'Maintenance',
+            ]);
+        });
 
-
-
-
-
-
-
-
-
+            Gate::define('access-maintenance', function ($user) {
+            return in_array($user->role->name, [
+            'Maintenance',          // ← monteur
+            'MaintenanceManager',
+            'Manager',
+            'Sales',
+            ]);
+        });
+        Gate::define('maintenance-tech', function ($user) {
+            return $user->role->name === 'Maintenance';
+        });
     }
 
 }
