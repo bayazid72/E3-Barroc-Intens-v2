@@ -101,9 +101,14 @@ class Invoice extends Model
         return $this->belongsTo(Contract::class);
     }
 
-    public function invoiceLines()
+    public function lines()
     {
         return $this->hasMany(InvoiceLine::class);
+    }
+
+    public function invoiceLines()
+    {
+        return $this->lines();
     }
 
     /**

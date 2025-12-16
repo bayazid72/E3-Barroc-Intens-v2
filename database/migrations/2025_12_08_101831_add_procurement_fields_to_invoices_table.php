@@ -12,14 +12,18 @@ return new class extends Migration
 public function up(): void
 {
     Schema::table('invoices', function (Blueprint $table) {
-        $table->enum('procurement_status', [
-            'pending','ordered','delivered','completed'
-        ])->default('pending');
+        // Only add columns if they don't exist
+        if (!Schema::hasColumn('invoices', 'procurement_status')) {
+            $table->enum('procurement_status', [
+                'pending','ordered','delivered','completed'
+            ])->default('pending');
+        }
 
-        $table->boolean('stock_processed')->default(false);
+        if (!Schema::hasColumn('invoices', 'stock_processed')) {
+            $table->boolean('stock_processed')->default(false);
+        }
 
-        $table->string('payment_method')->nullable();
-        $table->string('payment_reference')->nullable();
+        // payment_method and payment_reference already exist, skip them
     });
 }
 
