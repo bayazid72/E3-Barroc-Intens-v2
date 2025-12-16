@@ -7,9 +7,23 @@ use Illuminate\Database\Eloquent\Model;
 class InventoryMovement extends Model
 {
     protected $fillable = [
-        'product_id','quantity','type',
-        'related_work_order_id','user_id'
+        'product_id',
+        'quantity',
+        'type',
+        'related_work_order_id',
+        'user_id'
     ];
+
+    public function getSignedQuantityAttribute()
+    {
+        return match ($this->type) {
+            'usage'      => -$this->quantity,
+            'purchase'   => $this->quantity,
+            'correction' => $this->quantity,
+            default      => $this->quantity,
+        };
+    }
+
 
     public function product()
     {

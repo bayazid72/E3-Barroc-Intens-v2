@@ -13,6 +13,7 @@ return new class extends Migration {
             $table->string('image_path')->nullable();
             $table->decimal('price', 10, 2);
             $table->foreignId('product_category_id')->constrained('product_categories');
+            $table->string('supplier')->nullable();
             $table->timestamps();
         });
     }

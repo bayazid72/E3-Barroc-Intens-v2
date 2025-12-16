@@ -6,13 +6,16 @@ use Livewire\Volt\Volt;
 
 // Controllers & Livewire Components
 use App\Http\Controllers\UserController;
-
+use App\Livewire\CompanyManagement;
 use App\Livewire\UserManagement;
 
 use App\Livewire\Purchase\PurchaseDashboard;
 use App\Livewire\Purchase\ProductManager;
 use App\Livewire\Purchase\StockManager;
 use App\Livewire\Purchase\SupplierManager;
+use App\Livewire\Purchase\PaidInvoicesManager;
+use App\Livewire\Purchase\ProductOverview;
+
 
 use App\Livewire\Finance\FinanceDashboard;
 use App\Livewire\Finance\ContractManager;
@@ -29,6 +32,7 @@ use App\Livewire\Maintenance\WorkOrderForm;
 use App\Livewire\Maintenance\MaintenanceDashboard;
 use App\Models\LoginAttempt;
 use App\Livewire\Maintenance\ViewAppointment;
+use App\Livewire\NoteManagement;
 use App\Livewire\Purchase\InvoiceTasks;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
@@ -54,9 +58,20 @@ Route::get('/contact', fn() => view('contact'))->name('contact');
 |--------------------------------------------------------------------------
 */
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/dashboard', function () {
+    $role = auth()->user()->role?->name;
+
+    return match ($role) {
+        'Manager'              => redirect()->route('users.index'),
+        'Inkoop'               => redirect()->route('purchase.dashboard'),
+        'Finance'              => redirect()->route('finance.contracts'),
+        'MaintenanceManager'   => redirect()->route('maintenance.dashboard.manager'),
+        'Maintenance'          => redirect()->route('maintenance.dashboard'),
+        'Sales'                => redirect()->route('sales.dashboard'),
+
+        default                => view('dashboard'),
+    };
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 
 /*
@@ -150,32 +165,24 @@ Route::middleware(['auth', 'can:purchase-access'])
     ->prefix('purchase')
     ->name('purchase.')
     ->group(function () {
+
+        // Dashboard & beheer
         Route::get('/', PurchaseDashboard::class)->name('dashboard');
         Route::get('/products', ProductManager::class)->name('products');
         Route::get('/stock', StockManager::class)->name('stock');
         Route::get('/suppliers', SupplierManager::class)->name('suppliers');
 
-        // Paid invoices management
-        Route::get('/paid-invoices', \App\Livewire\Purchase\PaidInvoicesManager::class)->name('paid-invoices.index');
-        Route::get('/paid-invoices/{invoice}', \App\Livewire\Purchase\PaidInvoiceDetail::class)->name('paid-invoices.show');
+        // Overzichten
+        Route::get('/products/overview', ProductOverview::class)
+            ->name('products.overview');
+
+        // Paid invoices
+        Route::get('/paid-invoices', PaidInvoicesManager::class)
+            ->name('paid-invoices');
     });
-
-
-// Alternatieve Nederlandse routes (inkoop)
-Route::middleware(['auth', 'can:access-inkoop'])
-    ->prefix('inkoop')
-    ->name('purchase.')
-    ->group(function () {
-        Route::get('/', PurchaseDashboard::class)->name('dashboard');
-        Route::get('/producten', ProductManager::class)->name('products');
-        Route::get('/voorraad', StockManager::class)->name('stock');
-        Route::get('/leveranciers', SupplierManager::class)->name('suppliers');
-
-        // Paid invoices management (Dutch)
-        Route::get('/betaalde-facturen', \App\Livewire\Purchase\PaidInvoicesManager::class)->name('paid-invoices.index');
-        Route::get('/betaalde-facturen/{invoice}', \App\Livewire\Purchase\PaidInvoiceDetail::class)->name('paid-invoices.show');
-    });
-
+Route::middleware(['auth'])
+    ->get('/products', ProductOverview::class)
+    ->name('products.overview');
 
 /*
 |--------------------------------------------------------------------------
@@ -229,14 +236,16 @@ Route::middleware(['auth', 'can:access-maintenance'])
         // Storingen
         Route::get('/storingen', Malfunctions::class)->name('malfunctions');
 
-        // Nieuwe afspraak
-        Route::get('/afspraak/nieuw', CreateAppointment::class)
+       Route::get('/afspraak/nieuw', CreateAppointment::class)
             ->middleware('can:maintenance-manager')
             ->name('create');
 
-        // Afspraak details + edit
+        // Afspraak bekijken
         Route::get('/view/{appointment}', \App\Livewire\Maintenance\ViewAppointment::class)
+            ->middleware('can:maintenance-manager')
             ->name('view');
+
+
 
         Route::get('/afspraak/{appointment}/edit', \App\Livewire\Maintenance\EditAppointment::class)
             ->name('edit');
@@ -253,7 +262,171 @@ Route::middleware(['auth', 'can:access-maintenance'])
             ->middleware('can:maintenance-manager')
             ->name('notifications');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Maintenance - Afspraken bekijken
+|--------------------------------------------------------------------------
+| Detailweergave van een onderhoudsafspraak.
+| Alleen toegankelijk voor maintenance medewerkers.
+*/
+Route::get('/maintenance/view/{appointment}', ViewAppointment::class)
+    ->middleware('can:maintenance-appointments')
+    ->name('maintenance.view');
+
 //forgot-password
 Volt::route('/forgot-password', 'auth.forgot-password')->name('password.request');
 Volt::route('/reset-password/{token}', 'auth.reset-password')->name('password.reset');
 
+
+use App\Livewire\Sales\SalesDashboard;
+
+use App\Livewire\QuoteManagement;
+use App\Livewire\QuoteOverview;
+
+/*
+|--------------------------------------------------------------------------
+| Sales Dashboard
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])
+    ->prefix('sales')
+    ->name('sales.')
+    ->group(function () {
+
+        // Sales dashboard overzicht
+        Route::get('/', SalesDashboard::class)
+            ->name('dashboard');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Company Management
+|--------------------------------------------------------------------------
+| Beheer van bedrijven (klanten).
+*/
+Route::middleware(['auth', 'can:manage-companies'])->group(function () {
+
+    // Overzicht + aanmaken/bewerken van bedrijven
+    Route::get('/companies', CompanyManagement::class)
+        ->name('companies.index');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Note Management
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'can:manage-notes'])->group(function () {
+
+    // Overzicht + aanmaken/bewerken van notities
+    Route::get('/notes', NoteManagement::class)
+        ->name('notes.index');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Sales toegang (algemeen)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'can:sales-access'])->group(function () {
+
+    // Bedrijvenbeheer via sales
+    Route::get('/companies', CompanyManagement::class)
+        ->name('companies.index');
+
+    // Notitiebeheer via sales
+    Route::get('/notes', NoteManagement::class)
+        ->name('notes.index');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Sales routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'can:sales-access'])
+    ->prefix('sales')
+    ->name('sales.')
+    ->group(function () {
+
+        // Sales dashboard
+        Route::get('/', SalesDashboard::class)
+            ->name('dashboard');
+
+        // Bedrijvenbeheer binnen sales
+        Route::get('/companies', CompanyManagement::class)
+            ->name('companies');
+
+        // Notitiebeheer binnen sales
+        Route::get('/notes', NoteManagement::class)
+            ->name('notes');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Quote / Offerte Management
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'can:sales-access'])
+    ->prefix('sales')
+    ->name('quotes.')
+    ->group(function () {
+
+        // Nieuwe offerte aanmaken
+        Route::get('/offertes/nieuw', QuoteManagement::class)
+            ->name('create');
+
+        // Bestaande offerte bekijken of aanpassen
+        Route::get('/offertes/{quoteId}', QuoteManagement::class)
+            ->name('edit');
+
+        // Overzicht van alle offertes
+        Route::get('/offertes', QuoteOverview::class)
+            ->name('index');
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*Strakes aanpassen en de dubbele verwijderen.*/
+
+    Route::middleware(['auth', 'can:access-maintenance'])
+    ->prefix('maintenance')
+    ->name('maintenance.')
+    ->group(function () {
+
+        Route::get('/', MaintenanceDashboard::class)
+            ->name('dashboard');
+
+        Route::get('/planning', Planning::class)
+            ->middleware('can:maintenance-appointments')
+            ->name('planning');
+
+        Route::get('/view/{appointment}', ViewAppointment::class)
+            ->middleware('can:maintenance-appointments')
+            ->name('view');
+
+        Route::get('/afspraak/nieuw', CreateAppointment::class)
+            ->middleware('can:maintenance-appointments')
+            ->name('create');
+
+        // alleen manager
+        Route::get('/manager', DashboardManager::class)
+            ->middleware('can:maintenance-manager')
+            ->name('dashboard.manager');
+    });

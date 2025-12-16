@@ -25,6 +25,16 @@ class Appointment extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    public function isSick(): bool
+    {
+        return $this->status === 'sick';
+    }
+
+    public function isPlanned(): bool
+    {
+        return $this->status === 'planned';
+    }
+
 
     public function technician()
     {

@@ -4,7 +4,9 @@ namespace App\Livewire\Maintenance;
 
 use Livewire\Component;
 use App\Models\WorkOrder;
-use App\Models\Notification;
+use App\Models\Product;
+use App\Models\InventoryMovement;
+use App\Events\ProductUsed;
 use Illuminate\Support\Facades\Auth;
 
 class WorkOrderForm extends Component
@@ -14,6 +16,13 @@ class WorkOrderForm extends Component
 
     public $notes;
     public $solution;
+
+    /**
+     * [
+     *   ['product_id' => 3, 'quantity' => 2],
+     *   ...
+     * ]
+     */
     public $materials = [];
 
     public function mount(WorkOrder $workOrder)
@@ -23,12 +32,22 @@ class WorkOrderForm extends Component
 
         $this->notes = $this->workOrder->notes;
         $this->solution = $this->workOrder->solution;
-        $this->materials = $this->workOrder->materials_used ?? [];
+
+        // Convert saved materials to correct format
+        $this->materials = collect($this->workOrder->materials_used ?? [])
+            ->map(fn($m) => [
+                'product_id' => $m['product_id'] ?? null,
+                'quantity'   => $m['quantity'] ?? 1,
+            ])
+            ->toArray();
     }
 
     public function addMaterial()
     {
-        $this->materials[] = ['name' => '', 'quantity' => 1];
+        $this->materials[] = [
+            'product_id' => null,
+            'quantity'   => 1,
+        ];
     }
 
     public function removeMaterial($i)
@@ -39,28 +58,46 @@ class WorkOrderForm extends Component
 
     public function save()
     {
+        // 1 - VALIDATIE
+        foreach ($this->materials as $i => $mat) {
+            if ($mat['product_id']) {
+                $this->validate([
+                    "materials.$i.product_id" => 'required|exists:products,id',
+                    "materials.$i.quantity"   => 'required|integer|min:1',
+                ]);
+            }
+        }
+
+        // 2 - Werkbon opslaan
         $this->workOrder->update([
             'notes'          => $this->notes,
             'solution'       => $this->solution,
             'materials_used' => $this->materials,
         ]);
 
-        // COMPLETE notificatie
-        Notification::create([
-            'user_id'       => null, // zichtbaar voor alle managers/planners
-            'title'         => 'Werkbon afgerond',
-            'message'       => json_encode([
-                'workorder_id'  => $this->workOrder->id,
-                'company'       => $this->appointment->company->name,
-                'date'          => $this->appointment->date_planned,
-                'problem'       => $this->appointment->description,
-                'solution'      => $this->solution,
-                'materials'     => $this->materials,
-                'technician'    => Auth::user()->name,
-            ]),
-            'type'          => 'workorder',
-            'work_order_id' => $this->workOrder->id,
-        ]);
+        // 3 - Voorraad verminderen
+        foreach ($this->materials as $mat) {
+
+            if (!$mat['product_id']) {
+                continue;
+            }
+
+            $product = Product::find($mat['product_id']);
+
+            $qty = (int)$mat['quantity'];
+
+            // Voorraadbeweging
+            $movement = InventoryMovement::create([
+                'product_id'             => $product->id,
+                'quantity'               => $qty,
+                'type'                   => 'usage',
+                'related_work_order_id'  => $this->workOrder->id,
+                'user_id'                => auth()->id(),
+            ]);
+
+            // Event → inkoop melding
+            ProductUsed::dispatch($movement);
+        }
 
         session()->flash('success', 'Werkbon succesvol opgeslagen!');
         return redirect()->route('maintenance.workorder.form', $this->workOrder->id);
@@ -68,6 +105,13 @@ class WorkOrderForm extends Component
 
     public function render()
     {
-        return view('livewire.maintenance.workorder-form');
+        return view('livewire.maintenance.workorder-form', [
+            'products' => Product::whereHas('category', fn($q) =>
+                $q->where('is_employee_only', true)
+            )
+            ->orderBy('name')
+            ->get(),
+        ]);
     }
+
 }

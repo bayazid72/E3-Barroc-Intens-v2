@@ -20,16 +20,18 @@
             </select>
             @error('company_id') <p class="text-red-600 text-sm">{{ $message }}</p>@enderror
         </div>
+        @can('maintenance-manager')
+            <div>
+                <label class="font-semibold">Monteur</label>
+                <select wire:model="technician_id" class="w-full border rounded px-2 py-1">
+                    <option value="">-- Geen monteur --</option>
+                    @foreach($technicians as $t)
+                        <option value="{{ $t->id }}">{{ $t->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+        @endcan
 
-        <div>
-            <label class="font-semibold">Monteur</label>
-            <select wire:model="technician_id" class="w-full border rounded px-2 py-1">
-                <option value="">-- Geen monteur --</option>
-                @foreach($technicians as $t)
-                    <option value="{{ $t->id }}">{{ $t->name }}</option>
-                @endforeach
-            </select>
-        </div>
 
         <div>
             <label class="font-semibold">Type</label>

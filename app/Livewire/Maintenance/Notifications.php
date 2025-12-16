@@ -30,7 +30,11 @@ class Notifications extends Component
 
     public function render()
     {
-        $query = Notification::where('type', 'workorder')
+        $query = Notification::with([
+                'workorder.technician',
+                'workorder.appointment.company',
+            ])
+            ->where('type', 'workorder')
             ->orderBy('created_at', 'desc');
 
         // Zoekfilter op titel, klant, probleem, oplossing, technicus
@@ -45,7 +49,29 @@ class Notifications extends Component
 
         // Notificaties ophalen + JSON decoderen
         $notifications = $query->get()->map(function ($n) {
-            $n->data = json_decode($n->message);
+            $decoded = json_decode($n->message ?? '', false);
+
+            if (! $decoded) {
+                $decoded = (object)[];
+            }
+
+            // Normalize to object so property access stays safe in the view
+            if (is_array($decoded)) {
+                $decoded = (object)$decoded;
+            }
+
+            if (! isset($decoded->materials) || ! is_array($decoded->materials)) {
+                $decoded->materials = [];
+            }
+
+            $decoded->technician   = $decoded->technician   ?? $n->workorder?->technician?->name;
+            $decoded->company      = $decoded->company      ?? $n->workorder?->appointment?->company?->name;
+            $decoded->date         = $decoded->date         ?? optional($n->workorder?->appointment?->date_planned ?? $n->created_at)->toDateTimeString();
+            $decoded->problem      = $decoded->problem      ?? $n->message;
+            $decoded->solution     = $decoded->solution     ?? $n->workorder?->solution;
+            $decoded->workorder_id = $decoded->workorder_id ?? $n->work_order_id;
+
+            $n->data = $decoded;
             return $n;
         });
 

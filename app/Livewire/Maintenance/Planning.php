@@ -24,7 +24,9 @@ class Planning extends Component
         ]);
     }
 
-    // 🔹 Deze methode is nodig voor FullCalendar:
+    /**
+     * Events voor FullCalendar
+     */
     public function getEvents(): array
     {
         return Appointment::with(['company', 'technician'])
@@ -35,6 +37,11 @@ class Planning extends Component
                     'id'    => $a->id,
                     'title' => $a->company->name . ' - ' . ucfirst($a->type),
                     'start' => optional($a->date_planned)->format('Y-m-d H:i:s'),
+
+                    // 👇 rood bij ziekmelding
+                    'backgroundColor' => $a->status === 'sick' ? '#dc2626' : '#2563eb',
+                    'borderColor'     => $a->status === 'sick' ? '#dc2626' : '#2563eb',
+
                     'extendedProps' => [
                         'technician' => $a->technician?->name ?? 'Niet toegewezen',
                         'status'     => $a->status,

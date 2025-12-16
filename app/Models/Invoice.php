@@ -101,6 +101,9 @@ class Invoice extends Model
         return $this->belongsTo(Contract::class);
     }
 
+    /**
+     * Backwards-compatible alias for invoice lines.
+     */
     public function lines()
     {
         return $this->hasMany(InvoiceLine::class);
@@ -108,7 +111,7 @@ class Invoice extends Model
 
     public function invoiceLines()
     {
-        return $this->lines();
+        return $this->hasMany(InvoiceLine::class);
     }
 
     /**

@@ -7,7 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class Note extends Model
 {
     protected $fillable = [
-        'note', 'date', 'company_id', 'author_id'
+        'note',
+        'type',
+        'follow_up_at',
+        'date',
+        'company_id',
+        'author_id'
+    ];
+
+    protected $casts = [
+        'follow_up_at' => 'datetime',
+        'date'         => 'datetime',
     ];
 
     public function company()
