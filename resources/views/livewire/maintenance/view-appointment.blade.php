@@ -18,7 +18,7 @@
         <div class="mt-6">
             <button wire:click="takeOver"
                     class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                ✅ Afspraak overnemen
+                Afspraak overnemen
             </button>
         </div>
     @endif
@@ -27,7 +27,7 @@
         <div class="mt-6">
             <a href="{{ route('maintenance.edit', $appointment->id) }}"
                class="px-4 py-2 bg-blue-600 text-white rounded">
-                ✏️ Afspraak bewerken
+                Afspraak bewerken
             </a>
         </div>
     @endcan

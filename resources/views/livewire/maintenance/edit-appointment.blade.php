@@ -1,6 +1,6 @@
 <div class="max-w-xl mx-auto p-6 bg-white shadow rounded">
 
-    <h1 class="text-2xl font-bold mb-4">✏️ Afspraak bewerken</h1>
+    <h1 class="text-2xl font-bold mb-4">Afspraak bewerken</h1>
 
     <form wire:submit.prevent="save" class="space-y-4">
 

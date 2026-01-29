@@ -24,7 +24,7 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
 
-        // 🔥 JOUW EVENT → wanneer monteurs materialen gebruiken
+        // JOUW EVENT - wanneer monteurs materialen gebruiken
         ProductUsed::class => [
             NotifyPurchasingOfUsage::class,
         ],

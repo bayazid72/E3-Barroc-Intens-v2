@@ -91,7 +91,7 @@ Route::middleware(['auth', 'can:access-finance'])
    - Automatische redirect naar factuur
    - Offerte status wordt "Omgezet"
 
-### Acceptatiecriteria ✅
+### Acceptatiecriteria
 - [x] Vanuit een offerte is een "Maak factuur" knop beschikbaar
 - [x] Resulterende factuur neemt alle velden 1-op-1 over
 - [x] Visuele bevestiging dat conversie geslaagd is
@@ -106,11 +106,11 @@ php artisan test --filter=QuoteToInvoiceConversion
 ```
 
 ### Test Cases
-1. ✅ Quote kan worden omgezet naar factuur
-2. ✅ Quote zonder regels kan niet worden omgezet
-3. ✅ Al omgezette quote kan niet opnieuw worden omgezet
-4. ✅ Factuurnummer wordt automatisch gegenereerd
-5. ✅ Factuurnummer increments correct
+1. Quote kan worden omgezet naar factuur
+2. Quote zonder regels kan niet worden omgezet
+3. Al omgezette quote kan niet opnieuw worden omgezet
+4. Factuurnummer wordt automatisch gegenereerd
+5. Factuurnummer increments correct
 
 ## Uitbreidingsmogelijkheden
 

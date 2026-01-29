@@ -46,7 +46,7 @@
 
     </div>
 
-    {{-- 🔥 Hier komt de factuurtakenlijst --}}
+    {{-- Hier komt de factuurtakenlijst --}}
     <livewire:purchase.invoice-tasks />
 
 </div>

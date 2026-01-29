@@ -130,7 +130,7 @@ class User extends Model
 
 **ALTIJD type hints gebruiken voor parameters en return types.**
 
-✅ **GOED:**
+**GOED:**
 ```php
 public function createUser(string $name, string $email): User
 {
@@ -146,7 +146,7 @@ protected function validateCredentials(array $credentials): ?User
 }
 ```
 
-❌ **FOUT:**
+**FOUT:**
 ```php
 public function createUser($name, $email)  // Geen types!
 {
@@ -324,17 +324,17 @@ return new class extends Migration
 
 **Gebruik altijd `env()` in config bestanden, nooit in applicatie code.**
 
-✅ **GOED (in config/app.php):**
+**GOED (in config/app.php):**
 ```php
 'name' => env('APP_NAME', 'Laravel'),
 ```
 
-✅ **GOED (in applicatie):**
+**GOED (in applicatie):**
 ```php
 $appName = config('app.name');
 ```
 
-❌ **FOUT (in applicatie):**
+**FOUT (in applicatie):**
 ```php
 $appName = env('APP_NAME'); // NOOIT env() in applicatie code!
 ```
@@ -630,7 +630,7 @@ const newUser = { ...user, role: 'admin' };
 
 **Gebruik Tailwind utility classes in plaats van custom CSS.**
 
-✅ **GOED:**
+**GOED:**
 ```blade
 <div class="flex items-center justify-center min-h-screen bg-white">
     <div class="w-full max-w-md p-6 space-y-4">
@@ -738,13 +738,13 @@ const newUser = { ...user, role: 'admin' };
 
 **Gebruik snake_case en meervoud voor tabellen.**
 
-✅ **GOED:**
+**GOED:**
 - `users`
 - `orders`
 - `customer_orders`
 - `product_categories`
 
-❌ **FOUT:**
+**FOUT:**
 - `User`
 - `order`
 - `CustomerOrder`
@@ -1161,11 +1161,11 @@ $orderTotal = 100.50;
 $isActive = true;
 
 // Descriptieve namen
-✅ $userEmail
-❌ $ue
+$userEmail (GOED)
+$ue (FOUT)
 
-✅ $productPrice
-❌ $pp
+$productPrice (GOED)
+$pp (FOUT)
 
 // Collections zijn meervoud
 $users = User::all();

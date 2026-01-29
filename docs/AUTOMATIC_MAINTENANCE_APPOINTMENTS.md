@@ -167,16 +167,16 @@ Test coverage:
 
 ## Acceptatiecriteria (Voldaan)
 
-✅ **Na contractgoedkeuring genereert het systeem automatisch onderhoudstaken**
+**Na contractgoedkeuring genereert het systeem automatisch onderhoudstaken**
 - Event/Listener systeem triggert bij approve()
 - Appointments worden gegenereerd volgens afgesproken schema
 
-✅ **Handmatige aanpassingen blijven mogelijk**
+**Handmatige aanpassingen blijven mogelijk**
 - Alle velden van appointments kunnen worden aangepast
 - Extra appointments kunnen handmatig worden toegevoegd
 - Automatisch gegenereerde appointments kunnen worden verwijderd
 
-✅ **Taken verschijnen in de planning en zijn zichtbaar voor monteurs**
+**Taken verschijnen in de planning en zijn zichtbaar voor monteurs**
 - Appointments worden opgeslagen in dezelfde tabel
 - Hebben 'open' status en kunnen worden toegewezen
 - Zijn gekoppeld aan company_id voor filtering

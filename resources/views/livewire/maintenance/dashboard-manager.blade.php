@@ -52,13 +52,13 @@
     {{-- Alleen zichtbaar voor MaintenanceManager + Manager --}}
     @can('maintenance-manager')
         <div class="p-6 bg-white shadow rounded border hover:border-yellow-500 transition mt-8">
-            <h2 class="text-xl font-semibold mb-2">📝 Afspraken beheren</h2>
+            <h2 class="text-xl font-semibold mb-2">Afspraken beheren</h2>
             <p class="text-gray-600 mb-3">Nieuwe afspraken aanmaken of bestaande afspraken aanpassen.</p>
 
             <div class="flex gap-3 mt-3">
                 <a href="{{ route('maintenance.create') }}"
                    class="px-3 py-2 bg-yellow-500 text-white rounded text-sm">
-                    ➕ Nieuwe afspraak
+                    Nieuwe afspraak
                 </a>
 
                 <a href="{{ route('maintenance.planning') }}"

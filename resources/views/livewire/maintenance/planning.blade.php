@@ -16,7 +16,7 @@
             @can('maintenance-appointments')
                 <a href="{{ route('maintenance.create') }}"
                 class="px-3 py-2 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600">
-                    ➕ Nieuwe afspraak maken
+                     Nieuwe afspraak maken
                 </a>
             @endcan
 

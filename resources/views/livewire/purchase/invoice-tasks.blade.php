@@ -25,7 +25,7 @@
         </div>
     @else
         <div class="mb-4 p-3 bg-green-50 border border-green-200 text-green-800 rounded text-sm">
-            Er zijn op dit moment geen betaalde facturen die nog een inkoopactie vereisen. 🎉
+            Er zijn op dit moment geen betaalde facturen die nog een inkoopactie vereisen.
         </div>
     @endif
 

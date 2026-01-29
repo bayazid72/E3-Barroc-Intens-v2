@@ -35,7 +35,7 @@
                             @endif
                         </td>
 
-                        <!-- ⭐ Actieknoppen -->
+                        <!-- Actieknoppen -->
                         <td class="flex gap-2 py-2">
 
                             <!-- Werkbon invullen (formulier) -->
