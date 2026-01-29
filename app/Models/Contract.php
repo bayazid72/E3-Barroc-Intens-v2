@@ -36,17 +36,17 @@ class Contract extends Model
      */
     public function approve()
     {
-        $this->update(['status' => 'approved']);
+        $this->update(['status' => 'active', 'activated_at' => now()]);
         event(new \App\Events\ContractApproved($this));
     }
 
     public function isApproved(): bool
     {
-        return $this->status === 'approved';
+        return $this->status === 'active';
     }
 
     public function isDraft(): bool
     {
-        return $this->status === 'draft';
+        return $this->status === 'pending';
     }
 }

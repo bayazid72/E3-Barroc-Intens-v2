@@ -3,12 +3,33 @@
 use App\Models\Appointment;
 use App\Models\Company;
 use App\Models\Contract;
+use App\Models\Role;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
 
 test('it generates monthly appointments when contract is approved', function () {
     // Arrange: Maak een bedrijf en een contract
-    $company = Company::factory()->create();
-    $user = User::factory()->create();
+    $company = Company::create([
+        'name' => 'Test Company',
+        'street' => 'Test Street',
+        'house_number' => '1',
+        'city' => 'Test City',
+        'zip' => '1234AB',
+        'phone' => '0612345678',
+        'country_code' => 'NL',
+        'bkr_checked' => false,
+    ]);
+    
+    $role = Role::create(['name' => 'Admin']);
+    
+    $user = User::create([
+        'name' => 'Test User',
+        'email' => 'user@example.com',
+        'password' => bcrypt('password'),
+        'role_id' => $role->id,
+    ]);
 
     $contract = Contract::create([
         'company_id' => $company->id,
@@ -17,7 +38,7 @@ test('it generates monthly appointments when contract is approved', function () 
         'invoice_type' => 'monthly',
         'periodic_interval_months' => 1, // Maandelijks
         'created_by' => $user->id,
-        'status' => 'draft',
+        'status' => 'pending',
     ]);
 
     // Assert: Initieel geen appointments
@@ -55,8 +76,25 @@ test('it generates monthly appointments when contract is approved', function () 
 
 test('it generates quarterly appointments with custom interval', function () {
     // Arrange: Maak een contract met driemaandelijks interval
-    $company = Company::factory()->create();
-    $user = User::factory()->create();
+    $company = Company::create([
+        'name' => 'Test Company 2',
+        'street' => 'Test Street',
+        'house_number' => '2',
+        'city' => 'Test City',
+        'zip' => '1234AB',
+        'phone' => '0612345678',
+        'country_code' => 'NL',
+        'bkr_checked' => false,
+    ]);
+    
+    $role = Role::firstOrCreate(['name' => 'Admin']);
+    
+    $user = User::create([
+        'name' => 'Test User 2',
+        'email' => 'user2@example.com',
+        'password' => bcrypt('password'),
+        'role_id' => $role->id,
+    ]);
 
     $contract = Contract::create([
         'company_id' => $company->id,
@@ -65,7 +103,7 @@ test('it generates quarterly appointments with custom interval', function () {
         'invoice_type' => 'periodic',
         'periodic_interval_months' => 3, // Per kwartaal
         'created_by' => $user->id,
-        'status' => 'draft',
+        'status' => 'pending',
     ]);
 
     // Act: Keur het contract goed
@@ -85,8 +123,25 @@ test('it generates quarterly appointments with custom interval', function () {
 
 test('it generates appointments for one year when no end date', function () {
     // Arrange: Maak een contract zonder einddatum
-    $company = Company::factory()->create();
-    $user = User::factory()->create();
+    $company = Company::create([
+        'name' => 'Test Company 3',
+        'street' => 'Test Street',
+        'house_number' => '3',
+        'city' => 'Test City',
+        'zip' => '1234AB',
+        'phone' => '0612345678',
+        'country_code' => 'NL',
+        'bkr_checked' => false,
+    ]);
+    
+    $role = Role::firstOrCreate(['name' => 'Admin']);
+    
+    $user = User::create([
+        'name' => 'Test User 3',
+        'email' => 'user3@example.com',
+        'password' => bcrypt('password'),
+        'role_id' => $role->id,
+    ]);
 
     $contract = Contract::create([
         'company_id' => $company->id,
@@ -95,7 +150,7 @@ test('it generates appointments for one year when no end date', function () {
         'invoice_type' => 'monthly',
         'periodic_interval_months' => 1,
         'created_by' => $user->id,
-        'status' => 'draft',
+        'status' => 'pending',
     ]);
 
     // Act: Keur het contract goed
@@ -108,8 +163,25 @@ test('it generates appointments for one year when no end date', function () {
 
 test('contract approval status methods work', function () {
     // Arrange
-    $company = Company::factory()->create();
-    $user = User::factory()->create();
+    $company = Company::create([
+        'name' => 'Test Company 4',
+        'street' => 'Test Street',
+        'house_number' => '4',
+        'city' => 'Test City',
+        'zip' => '1234AB',
+        'phone' => '0612345678',
+        'country_code' => 'NL',
+        'bkr_checked' => false,
+    ]);
+    
+    $role = Role::firstOrCreate(['name' => 'Admin']);
+    
+    $user = User::create([
+        'name' => 'Test User 4',
+        'email' => 'user4@example.com',
+        'password' => bcrypt('password'),
+        'role_id' => $role->id,
+    ]);
 
     $contract = Contract::create([
         'company_id' => $company->id,
@@ -118,7 +190,7 @@ test('contract approval status methods work', function () {
         'invoice_type' => 'monthly',
         'periodic_interval_months' => 1,
         'created_by' => $user->id,
-        'status' => 'draft',
+        'status' => 'pending',
     ]);
 
     // Assert: Initial status

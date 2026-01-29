@@ -19,7 +19,7 @@ class GenerateMaintenanceAppointments
         $startDate = Carbon::parse($contract->starts_at);
         $endDate = $contract->ends_at 
             ? Carbon::parse($contract->ends_at) 
-            : $startDate->copy()->addYear(); // Standaard 1 jaar als geen einddatum
+            : $startDate->copy()->addMonths(12)->subDay(); // 12 maanden vanaf start
 
         $intervalMonths = $contract->periodic_interval_months ?? 1; // Standaard maandelijks
 
