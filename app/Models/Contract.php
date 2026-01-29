@@ -13,6 +13,7 @@ class Contract extends Model
         'invoice_type',
         'periodic_interval_months',
         'created_by',
+        'status',
     ];
 
     public function company()
@@ -23,5 +24,29 @@ class Contract extends Model
     public function lines()
     {
         return $this->hasMany(ContractLine::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    /**
+     * Keur het contract goed en trigger event voor automatische appointment generatie
+     */
+    public function approve()
+    {
+        $this->update(['status' => 'approved']);
+        event(new \App\Events\ContractApproved($this));
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === 'approved';
+    }
+
+    public function isDraft(): bool
+    {
+        return $this->status === 'draft';
     }
 }

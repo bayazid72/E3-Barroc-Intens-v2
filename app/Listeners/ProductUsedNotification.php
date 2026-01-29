@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Listeners;
 
 use App\Models\InventoryMovement;
 use Illuminate\Bus\Queueable;

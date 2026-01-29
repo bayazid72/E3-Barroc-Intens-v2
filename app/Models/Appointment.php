@@ -8,6 +8,7 @@ class Appointment extends Model
 {
     protected $fillable = [
         'company_id',
+        'contract_id',
         'technician_id',
         'type',
         'description',
@@ -25,6 +26,12 @@ class Appointment extends Model
     {
         return $this->belongsTo(Company::class);
     }
+
+    public function contract()
+    {
+        return $this->belongsTo(Contract::class);
+    }
+
     public function isSick(): bool
     {
         return $this->status === 'sick';

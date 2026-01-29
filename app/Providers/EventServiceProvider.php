@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\ContractApproved;
 use App\Events\ProductUsed;
+use App\Listeners\GenerateMaintenanceAppointments;
 use App\Listeners\NotifyPurchasingOfUsage;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -25,6 +27,11 @@ class EventServiceProvider extends ServiceProvider
         // 🔥 JOUW EVENT → wanneer monteurs materialen gebruiken
         ProductUsed::class => [
             NotifyPurchasingOfUsage::class,
+        ],
+
+        // Wanneer een contract wordt goedgekeurd
+        ContractApproved::class => [
+            GenerateMaintenanceAppointments::class,
         ],
     ];
 
