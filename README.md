@@ -7,3 +7,4 @@ Hieronder staat een stappenplan om dit project te clonen.
 6.  daarna "php artisan key:generate" uitvoeren
 7.  en dan "php artisan migrate" met daarna "php artisan db:seed" uitvoeren
 8.  als laatst "npm run dev" uitvoeren en kan je het project openen
+9. demo account pas is: 123
